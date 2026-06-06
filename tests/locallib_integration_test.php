@@ -50,7 +50,7 @@ final class locallib_integration_test extends \advanced_testcase {
      * @return string
      */
     private function avail(array $condition): string {
-        return json_encode(['c' => [$condition], 'showc' => [true]]);
+        return json_encode(['op' => '&', 'c' => [$condition], 'showc' => [true]]);
     }
 
 

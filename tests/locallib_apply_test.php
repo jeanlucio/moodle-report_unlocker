@@ -47,7 +47,7 @@ final class locallib_apply_test extends \basic_testcase {
         if (empty($showc)) {
             $showc = array_fill(0, count($conditions), true);
         }
-        return json_encode(['c' => $conditions, 'showc' => $showc]);
+        return json_encode(['op' => '&', 'c' => $conditions, 'showc' => $showc]);
     }
 
     public function test_null_json_returns_null_and_no_change(): void {
