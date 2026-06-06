@@ -120,7 +120,7 @@ export const init = () => {
     if (removeAllBtn) {
         removeAllBtn.addEventListener('click', () => {
             const visibleConds = [...document.querySelectorAll('.report-unlocker-condition')]
-                .filter(c => !c.hidden);
+                .filter(c => !c.hidden && !c.closest('.report-unlocker-entry').hidden);
             if (!visibleConds.length) {
                 return;
             }
