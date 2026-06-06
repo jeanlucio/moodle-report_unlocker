@@ -20,7 +20,7 @@ Feature: Display of access restrictions in the Unlocker report
     When I navigate to "Reports > Unlocker (Mass Availability)" in current page administration
     Then I should see "No access restrictions were found in this course."
     And I should not see "Activities and Resources"
-    And I should not see "Save all changes"
+    And "Save all changes" "button" should not exist
     And I should not see "Filter by section"
 
   Scenario: Report lists an activity that has a date allow-from condition
@@ -33,7 +33,7 @@ Feature: Display of access restrictions in the Unlocker report
     And I should see "Page One"
     And I should see "Allow from"
     And I should see "Remove this restriction"
-    And I should see "Save all changes"
+    And "Save all changes" "button" should exist
 
   Scenario: Report shows Restrict until label for a before-date condition
     Given the following "activities" exist:
