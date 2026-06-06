@@ -40,7 +40,6 @@ $PAGE->set_title(get_string('pluginname', 'report_unlocker'));
 $PAGE->set_heading($course->fullname);
 $PAGE->set_pagelayout('report');
 $PAGE->requires->js_call_amd('report_unlocker/filters', 'init');
-$PAGE->requires->js_call_amd('report_unlocker/profile_field', 'init');
 
 $moduleentries  = report_unlocker_get_module_conditions($id);
 $sectionentries = report_unlocker_get_section_conditions($id);

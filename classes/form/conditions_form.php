@@ -389,10 +389,7 @@ class conditions_form extends moodleform {
      * Renders the editable fields for a user-profile condition.
      *
      * Row 1: field select + operator select + remove checkbox.
-     * Row 2: value text input, hidden when operator is 'isempty' or 'isnotempty'.
-     *
-     * The operator select carries the CSS class 'report-unlocker-profile-op' so
-     * the profile_field AMD module can toggle row 2 on change.
+     * Row 2: value text input, hidden via hideIf when operator is 'isempty' or 'isnotempty'.
      *
      * @param string $prefix Element name prefix.
      * @param int $index Condition index within the availability array.
@@ -426,20 +423,14 @@ class conditions_form extends moodleform {
         $currentfield = !empty($data['sf']) ? 'sf:' . $data['sf'] : (!empty($data['cf']) ? 'cf:' . $data['cf'] : '');
         $currentop    = $data['op'] ?? 'contains';
 
-        $fieldselect = $mform->createElement('select', $fnamefield, '', $profilefields);
+        $fieldselect = $mform->createElement('selectgroups', $fnamefield, '', $profilefields);
         $oplabel     = $mform->createElement(
             'static',
             'lbl_op_' . $prefix . '_' . $index,
             '',
             '&nbsp;&nbsp;'
         );
-        $opselect = $mform->createElement(
-            'select',
-            $fnameop,
-            '',
-            $operators,
-            ['class' => 'report-unlocker-profile-op']
-        );
+        $opselect = $mform->createElement('select', $fnameop, '', $operators);
 
         $mform->addGroup(
             [$fieldselect, $oplabel, $opselect, $removeelem],
@@ -453,13 +444,6 @@ class conditions_form extends moodleform {
         $mform->setType($fnameop, PARAM_ALPHA);
         $mform->setDefault($fnameop, $currentop);
 
-        $isemptyop  = in_array($currentop, ['isempty', 'isnotempty'], true);
-        $valrowattrs = ['class' => 'report-unlocker-profile-valrow'];
-        if ($isemptyop) {
-            $valrowattrs['hidden'] = 'hidden';
-        }
-
-        $mform->addElement('html', html_writer::start_tag('div', $valrowattrs));
         $valelem = $mform->createElement('text', $fnameval, '', ['size' => '30']);
         $mform->addGroup(
             [$valelem],
@@ -470,7 +454,8 @@ class conditions_form extends moodleform {
         );
         $mform->setType($fnameval, PARAM_TEXT);
         $mform->setDefault($fnameval, $data['v'] ?? '');
-        $mform->addElement('html', html_writer::end_tag('div'));
+        $mform->hideIf('grp_' . $fnameval, $fnameop, 'eq', 'isempty');
+        $mform->hideIf('grp_' . $fnameval, $fnameop, 'eq', 'isnotempty');
     }
 
     /**

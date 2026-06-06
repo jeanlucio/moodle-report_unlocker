@@ -294,9 +294,9 @@ final class locallib_integration_test extends \advanced_testcase {
             $allkeys = array_merge($allkeys, array_keys($options));
         }
 
-        // Standard email field must be present.
+        // Standard fields supported by core availability_profile must be present.
         $this->assertContains('sf:email', $allkeys);
-        $this->assertContains('sf:username', $allkeys);
+        $this->assertContains('sf:firstname', $allkeys);
     }
 
     public function test_get_profile_fields_includes_custom_fields_when_present(): void {

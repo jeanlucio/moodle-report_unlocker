@@ -207,25 +207,14 @@ function report_unlocker_get_cms_with_completion(int $courseid): array {
 function report_unlocker_get_profile_fields(): array {
     global $DB;
 
-    $stdfields = [
-        'sf:username'          => get_string('username'),
-        'sf:idnumber'          => get_string('idnumber'),
-        'sf:email'             => get_string('email'),
-        'sf:phone1'            => get_string('phone1'),
-        'sf:phone2'            => get_string('phone2'),
-        'sf:institution'       => get_string('institution'),
-        'sf:department'        => get_string('department'),
-        'sf:address'           => get_string('address'),
-        'sf:city'              => get_string('city'),
-        'sf:country'           => get_string('country'),
-        'sf:lang'              => get_string('language'),
-        'sf:description'       => get_string('description'),
-        'sf:url'               => get_string('webpage'),
-        'sf:lastnamephonetic'  => get_string('lastnamephonetic'),
-        'sf:firstnamephonetic' => get_string('firstnamephonetic'),
-        'sf:middlename'        => get_string('middlename'),
-        'sf:alternatename'     => get_string('alternatename'),
-    ];
+    // Source the standard field list from the core availability_profile
+    // condition so the report offers exactly the fields core can restrict on
+    // (and uses the same display names). Avoids offering unsupported fields or
+    // missing supported ones such as firstname/lastname.
+    $stdfields = [];
+    foreach (\availability_profile\condition::get_standard_profile_fields() as $shortname => $label) {
+        $stdfields['sf:' . $shortname] = $label;
+    }
 
     $customrows = $DB->get_records('user_info_field', null, 'sortorder, name', 'id, shortname, name');
     $cffields   = [];
