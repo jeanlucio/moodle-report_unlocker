@@ -186,7 +186,8 @@ final class locallib_integration_test extends \advanced_testcase {
         $course = $this->getDataGenerator()->create_course();
         $mod    = $this->getDataGenerator()->create_module('assign', ['course' => $course->id]);
         $json   = json_encode([
-            'c' => [
+            'op'   => '&',
+            'c'    => [
                 ['type' => 'date', 'd' => '>=', 't' => 1000],
                 ['type' => 'date', 'd' => '<', 't' => 9000],
             ],
