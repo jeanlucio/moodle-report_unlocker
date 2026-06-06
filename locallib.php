@@ -35,7 +35,7 @@ function report_unlocker_parse_all_conditions(?string $availability): array {
     }
 
     $data = json_decode($availability, true);
-    if (!is_array($data) || !isset($data['c'])) {
+    if (!is_array($data) || !is_array($data['c'] ?? null)) {
         return [];
     }
 
@@ -315,7 +315,7 @@ function report_unlocker_get_module_conditions(int $courseid): array {
         }
         $results[] = [
             'type'       => 'module',
-            'id'         => $cm->id,
+            'id'         => (int) $cm->id,
             'name'       => $cm->name,
             'modname'    => $cm->modname,
             'sectionnum' => (int) $cm->sectionnum,
@@ -353,7 +353,7 @@ function report_unlocker_get_section_conditions(int $courseid): array {
             ?: get_string('section', 'report_unlocker', $section->section);
         $results[] = [
             'type'       => 'section',
-            'id'         => $section->id,
+            'id'         => (int) $section->id,
             'name'       => $sectionname,
             'sectionnum' => (int) $section->section,
             'conditions' => $conditions,
@@ -382,6 +382,10 @@ function report_unlocker_apply_condition_changes(
 ): array {
     if (empty($rawjson)) {
         return [null, false];
+    }
+
+    if (empty($updates) && empty($removals)) {
+        return [$rawjson, false];
     }
 
     $availability = json_decode($rawjson, true);

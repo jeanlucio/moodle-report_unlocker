@@ -135,7 +135,7 @@ final class locallib_parse_test extends \basic_testcase {
     }
 
     public function test_all_condition_fields_preserved_in_data_key(): void {
-        $condition = ['type' => 'grade', 'id' => 42, 'min' => 30.5, 'max' => 90.0];
+        $condition = ['type' => 'grade', 'id' => 42, 'min' => 30.5, 'max' => 90];
         $json = json_encode(['c' => [$condition], 'showc' => [true]]);
 
         $result = report_unlocker_parse_all_conditions($json);
