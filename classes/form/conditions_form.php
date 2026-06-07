@@ -580,12 +580,27 @@ class conditions_form extends moodleform {
                 break;
 
             case 'gamification':
-            default:
                 $staticelem = $mform->createElement(
                     'static',
                     'ph_info_' . $prefix . '_' . $index,
                     '',
                     get_string('playerhudgamification', 'report_unlocker')
+                );
+                $mform->addGroup(
+                    [$staticelem, $removeelem],
+                    'grp_phinfo_' . $prefix . '_' . $index,
+                    get_string('conditiontype_playerhud', 'report_unlocker'),
+                    ['&nbsp;&nbsp;'],
+                    false
+                );
+                break;
+
+            default:
+                $staticelem = $mform->createElement(
+                    'static',
+                    'ph_info_' . $prefix . '_' . $index,
+                    '',
+                    get_string('conditionreadonly', 'report_unlocker')
                 );
                 $mform->addGroup(
                     [$staticelem, $removeelem],
