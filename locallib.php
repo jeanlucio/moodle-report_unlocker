@@ -42,6 +42,14 @@ function report_unlocker_parse_all_conditions(?string $availability): array {
     $conditions = [];
     foreach ($data['c'] as $index => $condition) {
         if (!isset($condition['type'])) {
+            if (isset($condition['op']) && is_array($condition['c'] ?? null)) {
+                $conditions[] = [
+                    'index' => $index,
+                    'type'  => 'nested',
+                    'data'  => $condition,
+                    'showc' => $data['showc'][$index] ?? true,
+                ];
+            }
             continue;
         }
         $conditions[] = [

@@ -137,7 +137,7 @@ export const init = () => {
                     modal.getRoot().on(ModalEvents.save, e => {
                         e.preventDefault();
                         visibleConds.forEach(cond => {
-                            const checkbox = cond.querySelector('input[type="checkbox"]');
+                            const checkbox = cond.querySelector('input[name$="_remove"][type="checkbox"]');
                             if (checkbox) {
                                 checkbox.checked = true;
                             }

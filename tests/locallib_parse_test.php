@@ -98,7 +98,7 @@ final class locallib_parse_test extends \basic_testcase {
         $this->assertSame('completion', $result[4]['type']);
     }
 
-    public function test_nested_set_without_type_is_skipped(): void {
+    public function test_nested_set_returned_as_nested_type(): void {
         $json = json_encode([
             'c' => [
                 ['op' => '&', 'c' => [['type' => 'date', 'd' => '>=', 't' => 1000]]],
@@ -106,18 +106,24 @@ final class locallib_parse_test extends \basic_testcase {
             'showc' => [true],
         ]);
 
-        $this->assertSame([], report_unlocker_parse_all_conditions($json));
+        $result = report_unlocker_parse_all_conditions($json);
+
+        $this->assertCount(1, $result);
+        $this->assertSame(0, $result[0]['index']);
+        $this->assertSame('nested', $result[0]['type']);
+        $this->assertSame('&', $result[0]['data']['op']);
+        $this->assertTrue($result[0]['showc']);
     }
 
     /**
-     * When a nested set precedes typed conditions, indices must reflect
-     * original positions in the 'c' array so apply_condition_changes
-     * can address the right slot.
+     * Nested sets are included as 'nested' type entries.
+     * Indices must reflect original positions in the 'c' array so
+     * apply_condition_changes can address the right slot.
      */
     public function test_indices_reflect_original_array_positions(): void {
         $json = json_encode([
             'c' => [
-                // Index 0: nested set, skipped by the parser.
+                // Index 0: nested set.
                 ['op' => '&', 'c' => [['type' => 'date', 'd' => '>=', 't' => 1000]]],
                 // Index 1: date condition.
                 ['type' => 'date', 'd' => '>=', 't' => 1234567890],
@@ -129,9 +135,13 @@ final class locallib_parse_test extends \basic_testcase {
 
         $result = report_unlocker_parse_all_conditions($json);
 
-        $this->assertCount(2, $result);
-        $this->assertSame(1, $result[0]['index']);
-        $this->assertSame(2, $result[1]['index']);
+        $this->assertCount(3, $result);
+        $this->assertSame(0, $result[0]['index']);
+        $this->assertSame('nested', $result[0]['type']);
+        $this->assertSame(1, $result[1]['index']);
+        $this->assertSame('date', $result[1]['type']);
+        $this->assertSame(2, $result[2]['index']);
+        $this->assertSame('group', $result[2]['type']);
     }
 
     public function test_all_condition_fields_preserved_in_data_key(): void {
@@ -156,7 +166,7 @@ final class locallib_parse_test extends \basic_testcase {
         $this->assertSame('email', $result[0]['data']['sf']);
     }
 
-    public function test_mixed_typed_and_nested_only_typed_returned(): void {
+    public function test_mixed_typed_and_nested_all_returned(): void {
         $json = json_encode([
             'c' => [
                 ['type' => 'group', 'id' => 1],
@@ -168,11 +178,13 @@ final class locallib_parse_test extends \basic_testcase {
 
         $result = report_unlocker_parse_all_conditions($json);
 
-        $this->assertCount(2, $result);
+        $this->assertCount(3, $result);
         $this->assertSame(0, $result[0]['index']);
         $this->assertSame('group', $result[0]['type']);
-        $this->assertSame(2, $result[1]['index']);
-        $this->assertSame('completion', $result[1]['type']);
+        $this->assertSame(1, $result[1]['index']);
+        $this->assertSame('nested', $result[1]['type']);
+        $this->assertSame(2, $result[2]['index']);
+        $this->assertSame('completion', $result[2]['type']);
     }
 
     public function test_showc_value_returned_per_condition(): void {

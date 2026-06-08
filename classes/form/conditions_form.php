@@ -244,6 +244,36 @@ class conditions_form extends moodleform {
                 $this->render_playerhud_condition($prefix, $index, $data, $playerhuddata, $showcelem, $removeelem);
                 break;
 
+            case 'nested':
+                $parts      = explode('_', $prefix, 2);
+                $entitytype = $parts[0];
+                $entityid   = (int) $parts[1];
+                if ($entitytype === 'mod') {
+                    $editurl = new \moodle_url('/course/modedit.php', ['update' => $entityid, 'return' => 1]);
+                } else {
+                    $editurl = new \moodle_url('/course/editsection.php', ['id' => $entityid]);
+                }
+                $subcondcount = count($data['c'] ?? []);
+                $link = html_writer::link(
+                    $editurl,
+                    get_string('nestedgroup_editlink', 'report_unlocker'),
+                    ['target' => '_blank', 'rel' => 'noopener noreferrer']
+                );
+                $staticelem = $mform->createElement(
+                    'static',
+                    'readonly_' . $prefix . '_' . $index,
+                    '',
+                    $link
+                );
+                $mform->addGroup(
+                    [$staticelem, $showcelem, $removeelem],
+                    'grp_readonly_' . $prefix . '_' . $index,
+                    get_string('conditiontype_nested', 'report_unlocker') . ' (' . $subcondcount . ')',
+                    ['&nbsp;&nbsp;', '&nbsp;&nbsp;'],
+                    false
+                );
+                break;
+
             default:
                 $strmanager = get_string_manager();
                 $typekey    = 'conditiontype_' . $type;

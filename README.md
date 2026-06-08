@@ -212,14 +212,14 @@ All restriction descriptions are translated and displayed in the user's language
 | **0.2.0** | Core filters, date/group/grouping/grade/completion/profile/playerhud support, bulk delete | ✅ Done |
 | **0.3.0** | Behat acceptance tests (29 scenarios across 5 feature files) | ✅ Done |
 | **0.4.0** | Operator selector and per-condition / global visibility toggle | ✅ Done |
-| **0.5.0** | Nested restriction groups (read-only display) | Planned |
+| **0.5.0** | Nested restriction groups (link to activity settings) | ✅ Done |
 | **1.0.0** | Stable release, full edit UI for all restriction types | Planned |
 
 ---
 
 ### 🐛 Known Limitations
 
-* **Nested restriction groups:** Currently displayed as read-only. Full editing of logical AND/OR groups requires a tree UI (planned for v1.0).
+* 🔗 **Nested restriction groups** — Displayed with a direct link to the activity settings page. Click to edit the group in a new tab using Moodle's native editor.
 * **Backup/Restore:** Not currently supported in backup files (planned for v1.0).
 
 ---
