@@ -1,0 +1,98 @@
+{{!
+    @template report_unlocker/ai_chat_modal
+
+    AI assistant modal for bulk restriction management.
+
+    Example context (json):
+    {
+        "str_title": "AI Restriction Assistant",
+        "str_close": "Close",
+        "str_placeholder": "Describe the changes you want to make...",
+        "str_send": "Send",
+        "str_preview_title": "Proposed changes",
+        "str_activity": "Activity / Section",
+        "str_section": "Section",
+        "str_condtype": "Type",
+        "str_condition": "Current condition",
+        "str_action": "Action",
+        "str_confirm": "Apply changes",
+        "str_cancel": "Cancel"
+    }
+}}
+<div class="modal fade" id="report-unlocker-ai-modal" tabindex="-1"
+     aria-labelledby="ru-ai-modal-label" aria-modal="true" role="dialog">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="ru-ai-modal-label">
+                    <i class="fa fa-robot me-2" aria-hidden="true"></i>{{str_title}}
+                </h5>
+                <button type="button" class="btn-close btn-close-white"
+                        data-bs-dismiss="modal" data-dismiss="modal"
+                        aria-label="{{str_close}}">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+
+                {{! Input row }}
+                <div class="d-flex gap-2 align-items-start mb-3">
+                    <textarea id="ru-ai-input"
+                              class="form-control"
+                              rows="3"
+                              placeholder="{{str_placeholder}}"
+                              aria-label="{{str_placeholder}}"></textarea>
+                    <button id="ru-ai-send-btn" class="btn btn-primary" type="button"
+                            aria-label="{{str_send}}">
+                        <i class="fa fa-paper-plane" aria-hidden="true"></i>
+                        <span class="visually-hidden sr-only">{{str_send}}</span>
+                    </button>
+                </div>
+
+                {{! Spinner }}
+                <div id="ru-ai-spinner" class="text-center d-none mb-2" aria-live="polite">
+                    <div class="spinner-border spinner-border-sm text-primary" role="status">
+                        <span class="visually-hidden sr-only">{{str_send}}</span>
+                    </div>
+                </div>
+
+                {{! Error }}
+                <div id="ru-ai-error" class="alert alert-danger d-none" role="alert"></div>
+
+                {{! Preview }}
+                <div id="ru-ai-preview-section" class="d-none">
+                    <h6 class="fw-bold mt-3 mb-1">{{str_preview_title}}</h6>
+                    <p id="ru-ai-summary" class="text-muted small mb-2"></p>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-bordered table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col">{{str_activity}}</th>
+                                    <th scope="col">{{str_section}}</th>
+                                    <th scope="col">{{str_condtype}}</th>
+                                    <th scope="col">{{str_condition}}</th>
+                                    <th scope="col">{{str_action}}</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ru-ai-preview-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary"
+                        data-bs-dismiss="modal" data-dismiss="modal">
+                    {{str_cancel}}
+                </button>
+                <button id="ru-ai-confirm-btn" type="button" class="btn btn-success" disabled>
+                    <i class="fa fa-check me-1" aria-hidden="true"></i>{{str_confirm}}
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>

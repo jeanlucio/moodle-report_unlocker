@@ -26,6 +26,24 @@ defined('MOODLE_INTERNAL') || die();
 // phpcs:disable moodle.Files.LineLength
 
 $string['activitynotfound'] = 'Activity not found (#{$a})';
+$string['ai_action_delete'] = 'Remove';
+$string['ai_action_update'] = 'Update';
+$string['ai_assistant'] = 'AI Assistant';
+$string['ai_col_action'] = 'Action';
+$string['ai_col_activity'] = 'Activity / Section';
+$string['ai_col_condition'] = 'Current condition';
+$string['ai_col_condtype'] = 'Type';
+$string['ai_confirm'] = 'Apply changes';
+$string['ai_empty_message'] = 'Please enter a message before sending.';
+$string['ai_input_placeholder'] = 'Describe the changes you want to make to the restrictions...';
+$string['ai_invalid_changes'] = 'Invalid change data received.';
+$string['ai_modal_title'] = 'AI Restriction Assistant';
+$string['ai_no_changes'] = 'The AI did not identify any changes to propose.';
+$string['ai_no_conditions'] = 'This course has no restrictions to manage.';
+$string['ai_parse_failed'] = 'The AI response could not be interpreted. Please try again.';
+$string['ai_preview_title'] = 'Proposed changes';
+$string['ai_request_failed'] = 'The AI request failed. Please try again.';
+$string['ai_send'] = 'Send';
 $string['allsections'] = 'All sections';
 $string['alltypes'] = 'All types';
 $string['anygroup'] = 'Any group';

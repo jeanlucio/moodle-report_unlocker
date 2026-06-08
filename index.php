@@ -26,6 +26,8 @@ require(__DIR__ . '/../../config.php');
 require_once($CFG->libdir . '/formslib.php');
 require_once(__DIR__ . '/locallib.php');
 
+use report_unlocker\ai\service as ai_service;
+
 $id = required_param('id', PARAM_INT);
 
 $course  = get_course($id);
@@ -40,6 +42,15 @@ $PAGE->set_title(get_string('pluginname', 'report_unlocker'));
 $PAGE->set_heading($course->fullname);
 $PAGE->set_pagelayout('report');
 $PAGE->requires->js_call_amd('report_unlocker/filters', 'init');
+
+$aiavailable = has_capability('report/unlocker:editconditions', $context) && ai_service::has_ai();
+if ($aiavailable) {
+    $PAGE->requires->js_call_amd('report_unlocker/ai_chat', 'init', [
+        $id,
+        sesskey(),
+        $CFG->wwwroot,
+    ]);
+}
 
 $moduleentries  = report_unlocker_get_module_conditions($id);
 $sectionentries = report_unlocker_get_section_conditions($id);
@@ -455,6 +466,35 @@ $filterdata = [
 
 echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string('pluginname', 'report_unlocker'));
+
+if ($aiavailable) {
+    echo html_writer::tag('div',
+        html_writer::tag('button',
+            html_writer::tag('i', '', ['class' => 'fa fa-robot me-2', 'aria-hidden' => 'true']) .
+            get_string('ai_assistant', 'report_unlocker'),
+            [
+                'id'    => 'report-unlocker-ai-btn',
+                'class' => 'btn btn-outline-primary mb-3',
+                'type'  => 'button',
+            ]
+        ),
+        ['class' => 'd-flex justify-content-end']
+    );
+    echo $OUTPUT->render_from_template('report_unlocker/ai_chat_modal', [
+        'str_title'        => get_string('ai_modal_title', 'report_unlocker'),
+        'str_close'        => get_string('close', 'core'),
+        'str_placeholder'  => get_string('ai_input_placeholder', 'report_unlocker'),
+        'str_send'         => get_string('ai_send', 'report_unlocker'),
+        'str_preview_title' => get_string('ai_preview_title', 'report_unlocker'),
+        'str_activity'     => get_string('ai_col_activity', 'report_unlocker'),
+        'str_section'      => get_string('section', 'report_unlocker'),
+        'str_condtype'     => get_string('ai_col_condtype', 'report_unlocker'),
+        'str_condition'    => get_string('ai_col_condition', 'report_unlocker'),
+        'str_action'       => get_string('ai_col_action', 'report_unlocker'),
+        'str_confirm'      => get_string('ai_confirm', 'report_unlocker'),
+        'str_cancel'       => get_string('cancel', 'core'),
+    ]);
+}
 
 if (empty($moduleentries) && empty($sectionentries)) {
     echo $OUTPUT->notification(get_string('nodateconditions', 'report_unlocker'), 'info');

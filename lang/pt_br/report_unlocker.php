@@ -26,6 +26,24 @@ defined('MOODLE_INTERNAL') || die();
 // phpcs:disable moodle.Files.LineLength
 
 $string['activitynotfound'] = 'Atividade não encontrada (#{$a})';
+$string['ai_action_delete'] = 'Remover';
+$string['ai_action_update'] = 'Atualizar';
+$string['ai_assistant'] = 'Assistente IA';
+$string['ai_col_action'] = 'Ação';
+$string['ai_col_activity'] = 'Atividade / Seção';
+$string['ai_col_condition'] = 'Condição atual';
+$string['ai_col_condtype'] = 'Tipo';
+$string['ai_confirm'] = 'Aplicar mudanças';
+$string['ai_empty_message'] = 'Digite uma mensagem antes de enviar.';
+$string['ai_input_placeholder'] = 'Descreva as mudanças que deseja fazer nas restrições...';
+$string['ai_invalid_changes'] = 'Dados de mudança inválidos recebidos.';
+$string['ai_modal_title'] = 'Assistente IA de Restrições';
+$string['ai_no_changes'] = 'A IA não identificou nenhuma mudança a propor.';
+$string['ai_no_conditions'] = 'Este curso não possui restrições para gerenciar.';
+$string['ai_parse_failed'] = 'A resposta da IA não pôde ser interpretada. Tente novamente.';
+$string['ai_preview_title'] = 'Mudanças propostas';
+$string['ai_request_failed'] = 'A requisição à IA falhou. Tente novamente.';
+$string['ai_send'] = 'Enviar';
 $string['allsections'] = 'Todas as seções';
 $string['alltypes'] = 'Todos os tipos';
 $string['anygroup'] = 'Qualquer grupo';
