@@ -20,7 +20,7 @@ Feature: Remove all visible restrictions in the Unlocker report
       | activity | name     | course | section | availability                                                            |
       | page     | Page One | C1     | 1       | {"op":"&","c":[{"type":"date","d":">=","t":1893456000}],"showc":[true]} |
     And I am on the "Course 1" course page logged in as "teacher1"
-    And I navigate to "Reports > Unlocker (Mass Availability)" in current page administration
+    And I navigate to "Reports > Unlocker — Access Restrictions" in current page administration
     When I click on "Remove all visible" "button"
     Then I should see "Mark 1 visible restriction(s) for removal and save all changes?" in the "Remove all visible" "dialogue"
     When I click on "Yes" "button" in the "Remove all visible" "dialogue"
@@ -33,7 +33,7 @@ Feature: Remove all visible restrictions in the Unlocker report
       | page     | Page Alpha | C1     | 1       | {"op":"&","c":[{"type":"date","d":">=","t":1893456000}],"showc":[true]} |
       | page     | Page Beta  | C1     | 1       | {"op":"&","c":[{"type":"date","d":">=","t":1893456000}],"showc":[true]} |
     And I am on the "Course 1" course page logged in as "teacher1"
-    And I navigate to "Reports > Unlocker (Mass Availability)" in current page administration
+    And I navigate to "Reports > Unlocker — Access Restrictions" in current page administration
     When I click on "Remove all visible" "button"
     Then I should see "Mark 2 visible restriction(s) for removal and save all changes?" in the "Remove all visible" "dialogue"
 
@@ -42,7 +42,7 @@ Feature: Remove all visible restrictions in the Unlocker report
       | activity | name     | course | section | availability                                                            |
       | page     | Page One | C1     | 1       | {"op":"&","c":[{"type":"date","d":">=","t":1893456000}],"showc":[true]} |
     And I am on the "Course 1" course page logged in as "teacher1"
-    And I navigate to "Reports > Unlocker (Mass Availability)" in current page administration
+    And I navigate to "Reports > Unlocker — Access Restrictions" in current page administration
     When I click on "Remove all visible" "button"
     And I click on "Cancel" "button" in the "Remove all visible" "dialogue"
     Then I should see "Page One"
@@ -55,7 +55,7 @@ Feature: Remove all visible restrictions in the Unlocker report
       | page     | Page Alpha | C1     | 1       | {"op":"&","c":[{"type":"date","d":">=","t":1893456000}],"showc":[true]} |
       | page     | Page Beta  | C1     | 2       | {"op":"&","c":[{"type":"date","d":">=","t":1893456000}],"showc":[true]} |
     And I am on the "Course 1" course page logged in as "teacher1"
-    And I navigate to "Reports > Unlocker (Mass Availability)" in current page administration
+    And I navigate to "Reports > Unlocker — Access Restrictions" in current page administration
     When I set the field "Filter by section" to "1"
     And I click on "Remove all visible" "button"
     Then I should see "Mark 1 visible restriction(s) for removal and save all changes?" in the "Remove all visible" "dialogue"
@@ -70,7 +70,7 @@ Feature: Remove all visible restrictions in the Unlocker report
       | page     | Page Alpha | C1     | 1       | {"op":"&","c":[{"type":"date","d":">=","t":1893456000}],"showc":[true]} |
       | page     | Page Beta  | C1     | 1       | {"op":"&","c":[{"type":"date","d":">=","t":1893456000}],"showc":[true]} |
     And I am on the "Course 1" course page logged in as "teacher1"
-    And I navigate to "Reports > Unlocker (Mass Availability)" in current page administration
+    And I navigate to "Reports > Unlocker — Access Restrictions" in current page administration
     When I set the field "Filter by type" to "Date"
     And I click on "Remove all visible" "button"
     Then I should see "Mark 2 visible restriction(s) for removal and save all changes?" in the "Remove all visible" "dialogue"

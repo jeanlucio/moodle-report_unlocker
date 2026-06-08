@@ -21,14 +21,14 @@ Feature: Access control for the Unlocker report
 
   Scenario: Editing teacher sees the Unlocker link in course administration
     Given I am on the "Course 1" course page logged in as "teacher1"
-    When I navigate to "Reports > Unlocker (Mass Availability)" in current page administration
-    Then I should see "Unlocker (Mass Availability)"
+    When I navigate to "Reports > Unlocker — Access Restrictions" in current page administration
+    Then I should see "Unlocker — Access Restrictions"
 
   Scenario: Non-editing teacher sees the Unlocker link in course administration
     Given I am on the "Course 1" course page logged in as "nonedit1"
-    When I navigate to "Reports > Unlocker (Mass Availability)" in current page administration
-    Then I should see "Unlocker (Mass Availability)"
+    When I navigate to "Reports > Unlocker — Access Restrictions" in current page administration
+    Then I should see "Unlocker — Access Restrictions"
 
   Scenario: Student does not see the Unlocker link in course navigation
     Given I am on the "Course 1" course page logged in as "student1"
-    Then "Unlocker (Mass Availability)" "link" should not exist
+    Then "Unlocker — Access Restrictions" "link" should not exist

@@ -20,7 +20,7 @@ Feature: Client-side filters in the Unlocker report
       | activity | name     | course | section | availability                                                            |
       | page     | Page One | C1     | 1       | {"op":"&","c":[{"type":"date","d":">=","t":1893456000}],"showc":[true]} |
     And I am on the "Course 1" course page logged in as "teacher1"
-    And I navigate to "Reports > Unlocker (Mass Availability)" in current page administration
+    And I navigate to "Reports > Unlocker — Access Restrictions" in current page administration
     When I set the field "Filter by type" to "Date"
     Then I should see "Page One"
     And I should see "Allow from"
@@ -30,7 +30,7 @@ Feature: Client-side filters in the Unlocker report
       | activity | name     | course | section | availability                                                            |
       | page     | Page One | C1     | 1       | {"op":"&","c":[{"type":"date","d":">=","t":1893456000}],"showc":[true]} |
     And I am on the "Course 1" course page logged in as "teacher1"
-    And I navigate to "Reports > Unlocker (Mass Availability)" in current page administration
+    And I navigate to "Reports > Unlocker — Access Restrictions" in current page administration
     When I set the field "Filter by section" to "0"
     Then I should see "No access restrictions match the current filter."
 
@@ -40,7 +40,7 @@ Feature: Client-side filters in the Unlocker report
       | page     | Page Alpha | C1     | 1       | {"op":"&","c":[{"type":"date","d":">=","t":1893456000}],"showc":[true]} |
       | page     | Page Beta  | C1     | 2       | {"op":"&","c":[{"type":"date","d":">=","t":1893456000}],"showc":[true]} |
     And I am on the "Course 1" course page logged in as "teacher1"
-    And I navigate to "Reports > Unlocker (Mass Availability)" in current page administration
+    And I navigate to "Reports > Unlocker — Access Restrictions" in current page administration
     When I set the field "Filter by section" to "1"
     Then I should see "Page Alpha"
     And ".report-unlocker-entry[data-name='page beta']" "css_element" should not be visible
@@ -54,7 +54,7 @@ Feature: Client-side filters in the Unlocker report
       | page     | Page Alpha | C1     | 1       | {"op":"&","c":[{"type":"date","d":">=","t":1893456000}],"showc":[true]} |
       | page     | Page Beta  | C1     | 1       | {"op":"&","c":[{"type":"date","d":">=","t":1893456000}],"showc":[true]} |
     And I am on the "Course 1" course page logged in as "teacher1"
-    And I navigate to "Reports > Unlocker (Mass Availability)" in current page administration
+    And I navigate to "Reports > Unlocker — Access Restrictions" in current page administration
     When I set the field "Search" to "alpha"
     And I wait "1" seconds
     Then I should see "Page Alpha"
@@ -66,7 +66,7 @@ Feature: Client-side filters in the Unlocker report
       | page     | Page Alpha | C1     | 1       | {"op":"&","c":[{"type":"date","d":">=","t":1893456000}],"showc":[true]} |
       | page     | Page Beta  | C1     | 1       | {"op":"&","c":[{"type":"date","d":">=","t":1893456000}],"showc":[true]} |
     And I am on the "Course 1" course page logged in as "teacher1"
-    And I navigate to "Reports > Unlocker (Mass Availability)" in current page administration
+    And I navigate to "Reports > Unlocker — Access Restrictions" in current page administration
     When I set the field "Search" to "BETA"
     And I wait "1" seconds
     Then I should see "Page Beta"
@@ -77,7 +77,7 @@ Feature: Client-side filters in the Unlocker report
       | activity | name     | course | section | availability                                                            |
       | page     | Page One | C1     | 1       | {"op":"&","c":[{"type":"date","d":">=","t":1893456000}],"showc":[true]} |
     And I am on the "Course 1" course page logged in as "teacher1"
-    And I navigate to "Reports > Unlocker (Mass Availability)" in current page administration
+    And I navigate to "Reports > Unlocker — Access Restrictions" in current page administration
     Then "#unlocker-clear-filters" "css_element" should not be visible
     When I set the field "Filter by section" to "1"
     Then "#unlocker-clear-filters" "css_element" should be visible
@@ -88,7 +88,7 @@ Feature: Client-side filters in the Unlocker report
       | page     | Page Alpha | C1     | 1       | {"op":"&","c":[{"type":"date","d":">=","t":1893456000}],"showc":[true]} |
       | page     | Page Beta  | C1     | 2       | {"op":"&","c":[{"type":"date","d":">=","t":1893456000}],"showc":[true]} |
     And I am on the "Course 1" course page logged in as "teacher1"
-    And I navigate to "Reports > Unlocker (Mass Availability)" in current page administration
+    And I navigate to "Reports > Unlocker — Access Restrictions" in current page administration
     When I set the field "Filter by section" to "1"
     And ".report-unlocker-entry[data-name='page beta']" "css_element" should not be visible
     And I click on "Clear filters" "button"
@@ -102,7 +102,7 @@ Feature: Client-side filters in the Unlocker report
       | page     | Page Alpha | C1     | 1       | {"op":"&","c":[{"type":"date","d":">=","t":1893456000}],"showc":[true]} |
       | page     | Page Beta  | C1     | 2       | {"op":"&","c":[{"type":"date","d":">=","t":1893456000}],"showc":[true]} |
     And I am on the "Course 1" course page logged in as "teacher1"
-    And I navigate to "Reports > Unlocker (Mass Availability)" in current page administration
+    And I navigate to "Reports > Unlocker — Access Restrictions" in current page administration
     When I set the field "Filter by section" to "1"
     And I set the field "Filter by type" to "Date"
     Then I should see "Page Alpha"
