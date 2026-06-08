@@ -46,7 +46,6 @@
 }
 
 #report-unlocker-ai-modal .btn-close {
-    background-image: none;
     background: transparent;
     border: 0;
     color: var(--white, #fff);
