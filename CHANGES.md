@@ -4,10 +4,11 @@ All notable changes to this plugin are documented here.
 
 ---
 
-## [v0.2.0] — 2026-06-06
+## [v0.2.0] — 2026-06-08
 
 ### Added
 
+- AI assistant AJAX endpoints migrated to Moodle Web Services (`classes/external/`), replacing the custom `ajax/` PHP scripts. Sesskey is now managed automatically by `core/ajax`.
 - All access restriction types are now visible in the report (previously only date conditions were shown).
 - **Group** and **Grouping** restrictions are fully editable (select a specific group/grouping or "any group").
 - **Grade, Completion, User profile, PlayerHUD** restrictions are shown as read-only with an option to remove them.

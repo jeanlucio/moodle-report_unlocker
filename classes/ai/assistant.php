@@ -64,11 +64,11 @@ class assistant {
 
         if (empty($context)) {
             return [
-                'success' => false,
-                'error'   => get_string('ai_no_conditions', 'report_unlocker'),
-                'summary' => '',
-                'preview' => [],
-                'changes' => [],
+                'success'   => false,
+                'errorcode' => 'ai_no_conditions',
+                'summary'   => '',
+                'preview'   => [],
+                'changes'   => [],
             ];
         }
 
@@ -77,11 +77,11 @@ class assistant {
 
         if (!$result['success']) {
             return [
-                'success' => false,
-                'error'   => $result['message'] ?: get_string('ai_request_failed', 'report_unlocker'),
-                'summary' => '',
-                'preview' => [],
-                'changes' => [],
+                'success'   => false,
+                'errorcode' => 'ai_request_failed',
+                'summary'   => '',
+                'preview'   => [],
+                'changes'   => [],
             ];
         }
 
@@ -89,11 +89,11 @@ class assistant {
             [$summary, $changes] = $this->parse_response($result['data']);
         } catch (\Throwable $e) {
             return [
-                'success' => false,
-                'error'   => get_string('ai_parse_failed', 'report_unlocker'),
-                'summary' => '',
-                'preview' => [],
-                'changes' => [],
+                'success'   => false,
+                'errorcode' => 'ai_parse_failed',
+                'summary'   => '',
+                'preview'   => [],
+                'changes'   => [],
             ];
         }
 

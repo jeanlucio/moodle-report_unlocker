@@ -45,11 +45,7 @@ $PAGE->requires->js_call_amd('report_unlocker/filters', 'init');
 
 $aiavailable = has_capability('report/unlocker:editconditions', $context) && ai_service::has_ai();
 if ($aiavailable) {
-    $PAGE->requires->js_call_amd('report_unlocker/ai_chat', 'init', [
-        $id,
-        sesskey(),
-        $CFG->wwwroot,
-    ]);
+    $PAGE->requires->js_call_amd('report_unlocker/ai_chat', 'init', [$id]);
 }
 
 $moduleentries  = report_unlocker_get_module_conditions($id);

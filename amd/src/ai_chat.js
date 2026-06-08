@@ -21,16 +21,11 @@
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+import ajax from 'core/ajax';
 import {getString, getStrings} from 'core/str';
 
 /** @type {int} Course ID injected from PHP. */
 let courseId = 0;
-
-/** @type {string} Sesskey injected from PHP. */
-let sesskey = '';
-
-/** @type {string} Base URL for AJAX endpoints. */
-let baseurl = '';
 
 /** @type {array} Pending changes confirmed by the teacher. */
 let pendingChanges = [];
@@ -39,13 +34,9 @@ let pendingChanges = [];
  * Initialises the AI chat assistant button and modal.
  *
  * @param {int} cid Course ID.
- * @param {string} sk Sesskey.
- * @param {string} url Base URL for AJAX calls.
  */
-export const init = (cid, sk, url) => {
+export const init = (cid) => {
     courseId = cid;
-    sesskey = sk;
-    baseurl = url;
 
     const btn = document.getElementById('report-unlocker-ai-btn');
     if (!btn) {
@@ -94,7 +85,7 @@ const resetModal = () => {
 };
 
 /**
- * Sends the teacher message to the AJAX endpoint and renders the preview.
+ * Sends the teacher message to the web service and renders the preview.
  */
 const sendMessage = async() => {
     const modal = document.getElementById('report-unlocker-ai-modal');
@@ -110,42 +101,28 @@ const sendMessage = async() => {
     hidePreview();
 
     try {
-        const params = new URLSearchParams({
-            courseid: courseId,
-            message:  message,
-            sesskey:  sesskey,
-        });
-
-        const response = await fetch(`${baseurl}/report/unlocker/ajax/ai_chat.php`, {
-            method:  'POST',
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-            body:    params.toString(),
-        });
-
-        const data = await response.json();
-
-        if (!data.success) {
-            showError(data.error || await getString('ai_request_failed', 'report_unlocker'));
-            return;
-        }
+        const data = await ajax.call([{
+            methodname: 'report_unlocker_send_message',
+            args: {courseid: courseId, message: message},
+        }])[0];
 
         if (!data.preview || data.preview.length === 0) {
             showError(data.summary || await getString('ai_no_changes', 'report_unlocker'));
             return;
         }
 
-        pendingChanges = data.changes;
+        pendingChanges = JSON.parse(data.changesjson);
         renderPreview(data.summary, data.preview);
 
     } catch (err) {
-        showError(await getString('ai_request_failed', 'report_unlocker'));
+        showError(err.message || await getString('ai_request_failed', 'report_unlocker'));
     } finally {
         setLoading(false);
     }
 };
 
 /**
- * Sends confirmed changes to the apply endpoint and reloads on success.
+ * Sends confirmed changes to the web service and reloads on success.
  */
 const applyChanges = async() => {
     if (pendingChanges.length === 0) {
@@ -158,29 +135,15 @@ const applyChanges = async() => {
     hideError();
 
     try {
-        const params = new URLSearchParams({
-            courseid: courseId,
-            changes:  JSON.stringify(pendingChanges),
-            sesskey:  sesskey,
-        });
-
-        const response = await fetch(`${baseurl}/report/unlocker/ajax/ai_apply.php`, {
-            method:  'POST',
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-            body:    params.toString(),
-        });
-
-        const data = await response.json();
-
-        if (!data.success) {
-            showError(data.error || await getString('ai_request_failed', 'report_unlocker'));
-            return;
-        }
+        await ajax.call([{
+            methodname: 'report_unlocker_apply_changes',
+            args: {courseid: courseId, changesjson: JSON.stringify(pendingChanges)},
+        }])[0];
 
         window.location.reload();
 
     } catch (err) {
-        showError(await getString('ai_request_failed', 'report_unlocker'));
+        showError(err.message || await getString('ai_request_failed', 'report_unlocker'));
         modal.querySelector('#ru-ai-confirm-btn').disabled = false;
     } finally {
         setLoading(false);

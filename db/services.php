@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Plugin version and other meta-data are defined here.
+ * External function definitions for report_unlocker.
  *
  * @package    report_unlocker
  * @copyright  2026 Jean Lúcio
@@ -24,9 +24,19 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'report_unlocker';
-$plugin->version   = 2026060801;        // The current plugin version (Date: YYYYMMDDXX).
-$plugin->requires  = 2024100700;        // Requires Moodle 4.5+.
-$plugin->supported = [405, 502];
-$plugin->maturity  = MATURITY_ALPHA;
-$plugin->release   = 'v0.2.0';
+$functions = [
+    'report_unlocker_send_message' => [
+        'classname'     => 'report_unlocker\\external\\ai_chat',
+        'description'   => 'Sends a teacher message to the AI assistant and returns a preview of proposed changes.',
+        'type'          => 'read',
+        'ajax'          => true,
+        'loginrequired' => true,
+    ],
+    'report_unlocker_apply_changes' => [
+        'classname'     => 'report_unlocker\\external\\ai_apply',
+        'description'   => 'Applies confirmed AI-proposed condition changes to the course.',
+        'type'          => 'write',
+        'ajax'          => true,
+        'loginrequired' => true,
+    ],
+];
