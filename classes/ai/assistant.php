@@ -43,6 +43,8 @@ class assistant {
     private array $sections;
 
     /**
+     * Initialises the assistant for the given course.
+     *
      * @param int $courseid Course ID.
      */
     public function __construct(int $courseid) {
@@ -383,8 +385,8 @@ class assistant {
         switch ($cond['type']) {
             case 'date':
                 $dir = ($data['d'] ?? 'from') === 'from'
-                    ? get_string('label_allowfrom', 'report_unlocker')
-                    : get_string('label_restrictuntil', 'report_unlocker');
+                    ? get_string('dateafter', 'report_unlocker')
+                    : get_string('datebefore', 'report_unlocker');
                 $date = userdate((int) ($data['t'] ?? 0), get_string('strftimedatetimeshort', 'langconfig'));
                 return $dir . ': ' . $date;
 

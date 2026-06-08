@@ -215,7 +215,7 @@ const renderPreview = async(summary, preview) => {
 
         tr.innerHTML = `
             <td>${escapeHtml(row.entry_name)}</td>
-            <td>${escapeHtml(strSection)} ${row.section_num}</td>
+            <td>${escapeHtml(strSection.replace('{$a}', row.section_num))}</td>
             <td>${escapeHtml(row.cond_type)}</td>
             <td>${escapeHtml(row.cond_summary)}</td>
             <td class="${actionClass} fw-bold">${escapeHtml(actionLabel)}</td>
