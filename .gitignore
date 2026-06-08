@@ -1,21 +1,6 @@
-# Dependências do Node (Grunt)
-node_modules/
-.grunt/
-
-# Arquivos de sistema
-.DS_Store
-Thumbs.db
-
-# IDEs
-.vscode/
-.idea/
-
-# Ignorar configurações locais de linting (Evita conflito com o Grunt do Moodle CI)
-.eslintrc
-.eslintrc.json
-.eslintignore
-
+# Local AI tool configs
 .roo
 .claude
+
+# Local planning document (not part of the plugin)
 SCOPE.md
-docs
