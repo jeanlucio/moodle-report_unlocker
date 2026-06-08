@@ -33,6 +33,7 @@ Instead of manually editing each activity's restriction settings one by one, Unl
   * ✅ **Completion-based** — Restrict by activity completion status
   * 🆔 **Profile-based** — Restrict by user profile fields (standard and custom fields)
   * 🎮 **PlayerHUD-based** — Restrict by player level, items, or character class (requires `availability_playerhud` and `block_playerhud`)
+  * 🔗 **Nested restriction groups** — Groups of AND/OR conditions displayed as **"Nested restriction group (N)"** (where `N` is the number of child conditions). You can hide them from students or open the native activity settings to edit the group directly.
 * ✏️ **Bulk Management:**
   * Edit restrictions directly from the report
   * Delete individual restrictions
@@ -205,22 +206,10 @@ All restriction descriptions are translated and displayed in the user's language
 
 ---
 
-### 🛣️ Roadmap
-
-| Version | Features | Status |
-|---------|----------|--------|
-| **0.2.0** | Core filters, date/group/grouping/grade/completion/profile/playerhud support, bulk delete | ✅ Done |
-| **0.3.0** | Behat acceptance tests (29 scenarios across 5 feature files) | ✅ Done |
-| **0.4.0** | Operator selector and per-condition / global visibility toggle | ✅ Done |
-| **0.5.0** | Nested restriction groups (link to activity settings) | ✅ Done |
-| **1.0.0** | Stable release, full edit UI for all restriction types | Planned |
-
----
 
 ### 🐛 Known Limitations
 
-* 🔗 **Nested restriction groups** — Displayed with a direct link to the activity settings page. Click to edit the group in a new tab using Moodle's native editor.
-* **Backup/Restore:** Not currently supported in backup files (planned for v1.0).
+* 🔗 **Nested restriction groups** — Displayed as **"Nested restriction group (N)"**, where `N` is the number of child conditions inside the group. They cannot be removed directly by this report; a direct link to the activity settings page is shown instead. Click to edit the group in a new tab using Moodle's native editor.
 
 ---
 
@@ -274,6 +263,7 @@ Em vez de editar manualmente as configurações de restrição de cada atividade
   * ✅ **Baseada em conclusão** — Restringe por status de conclusão de atividades
   * 🆔 **Baseada em perfil** — Restringe por campos de perfil do usuário (padrão ou customizados)
   * 🎮 **Baseada em PlayerHUD** — Restringe por nível, itens ou classe de personagem (requer `availability_playerhud` e `block_playerhud`)
+  * 🔗 **Grupos de restrição aninhados** — Grupos AND/OR exibidos como **"Grupo de restrição aninhado (N)"** (onde `N` é o número de condições filhas). É possível ocultá-los dos estudantes ou abrir as configurações nativas da atividade para editar o grupo diretamente.
 * ✏️ **Gerenciamento em Massa:**
   * Edite restrições diretamente no relatório
   * Exclua restrições individuais
@@ -440,25 +430,6 @@ Unlocker inclui strings de idioma em:
 * **Português (Brasil)** (`pt_br/`)
 
 Todas as descrições de restrição são traduzidas e exibidas no idioma do usuário.
-
----
-
-### 🛣️ Roadmap
-
-| Versão | Funcionalidades | Status |
-|--------|-----------------|--------|
-| **0.2.0** | Filtros principais, suporte data/grupo/agrupamento/nota/conclusão/perfil/playerhud, exclusão em massa | ✅ Concluído |
-| **0.3.0** | Testes de aceitação Behat (29 cenários em 5 feature files) | ✅ Concluído |
-| **0.4.0** | Seletor de operador e alternador de visibilidade por condição / global | ✅ Concluído |
-| **0.5.0** | Grupos de restrição aninhados (somente leitura) | Planejado |
-| **1.0.0** | Versão estável, UI de edição completa para todos os tipos de restrição | Planejado |
-
----
-
-### 🐛 Limitações Conhecidas
-
-* **Grupos de restrição aninhados:** Atualmente exibidos como somente leitura. A edição completa de grupos lógicos AND/OR requer uma UI de árvore (planejada para v1.0).
-* **Backup/Restauração:** Não atualmente suportado em arquivos de backup (planejado para v1.0).
 
 ---
 

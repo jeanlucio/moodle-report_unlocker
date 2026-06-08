@@ -44,8 +44,8 @@ let pendingChanges = [];
  */
 export const init = (cid, sk, url) => {
     courseId = cid;
-    sesskey  = sk;
-    baseurl  = url;
+    sesskey = sk;
+    baseurl = url;
 
     const btn = document.getElementById('report-unlocker-ai-btn');
     if (!btn) {
@@ -97,8 +97,8 @@ const resetModal = () => {
  * Sends the teacher message to the AJAX endpoint and renders the preview.
  */
 const sendMessage = async() => {
-    const modal   = document.getElementById('report-unlocker-ai-modal');
-    const input   = modal.querySelector('#ru-ai-input');
+    const modal = document.getElementById('report-unlocker-ai-modal');
+    const input = modal.querySelector('#ru-ai-input');
     const message = input.value.trim();
 
     if (message === '') {
@@ -194,9 +194,9 @@ const applyChanges = async() => {
  * @param {array}  preview Array of preview rows.
  */
 const renderPreview = async(summary, preview) => {
-    const modal   = document.getElementById('report-unlocker-ai-modal');
+    const modal = document.getElementById('report-unlocker-ai-modal');
     const section = modal.querySelector('#ru-ai-preview-section');
-    const body    = modal.querySelector('#ru-ai-preview-body');
+    const body = modal.querySelector('#ru-ai-preview-body');
     const summaryEl = modal.querySelector('#ru-ai-summary');
 
     const [strDelete, strUpdate, strSection] = await getStrings([
@@ -233,7 +233,7 @@ const renderPreview = async(summary, preview) => {
  * @param {boolean} loading
  */
 const setLoading = loading => {
-    const modal   = document.getElementById('report-unlocker-ai-modal');
+    const modal = document.getElementById('report-unlocker-ai-modal');
     const sendBtn = modal.querySelector('#ru-ai-send-btn');
     const spinner = modal.querySelector('#ru-ai-spinner');
 
@@ -252,7 +252,7 @@ const setLoading = loading => {
  */
 const showError = message => {
     const modal = document.getElementById('report-unlocker-ai-modal');
-    const el    = modal.querySelector('#ru-ai-error');
+    const el = modal.querySelector('#ru-ai-error');
     el.textContent = message;
     el.classList.remove('d-none');
 };
@@ -262,7 +262,7 @@ const showError = message => {
  */
 const hideError = () => {
     const modal = document.getElementById('report-unlocker-ai-modal');
-    const el    = modal.querySelector('#ru-ai-error');
+    const el = modal.querySelector('#ru-ai-error');
     el.classList.add('d-none');
     el.textContent = '';
 };
