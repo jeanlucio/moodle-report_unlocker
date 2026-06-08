@@ -462,26 +462,14 @@ $filterdata = [
     'str_removeallvisibleconfirm'   => get_string('removeallvisibleconfirm', 'report_unlocker'),
     'str_search'                    => get_string('search', 'report_unlocker'),
     'str_searchplaceholder'         => get_string('searchplaceholder', 'report_unlocker'),
+    'aiavailable'                   => $aiavailable,
+    'str_ai_assistant'              => $aiavailable ? get_string('ai_assistant', 'report_unlocker') : '',
 ];
 
 echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string('pluginname', 'report_unlocker'));
 
 if ($aiavailable) {
-    echo html_writer::tag(
-        'div',
-        html_writer::tag(
-            'button',
-            html_writer::tag('i', '', ['class' => 'fa fa-robot me-2', 'aria-hidden' => 'true']) .
-            get_string('ai_assistant', 'report_unlocker'),
-            [
-                'id'    => 'report-unlocker-ai-btn',
-                'class' => 'btn btn-outline-primary mb-3',
-                'type'  => 'button',
-            ]
-        ),
-        ['class' => 'd-flex justify-content-end']
-    );
     echo $OUTPUT->render_from_template('report_unlocker/ai_chat_modal', [
         'str_title'        => get_string('ai_modal_title', 'report_unlocker'),
         'str_close'        => get_string('close', 'report_unlocker'),

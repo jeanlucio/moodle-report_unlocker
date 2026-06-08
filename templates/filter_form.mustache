@@ -38,7 +38,9 @@
         "str_removeallvisible": "Remove all visible",
         "str_removeallvisibleconfirm": "Mark {count} visible restriction(s) for removal and save all changes?",
         "str_search": "Search",
-        "str_searchplaceholder": "Search by activity name..."
+        "str_searchplaceholder": "Search by activity name...",
+        "aiavailable": true,
+        "str_ai_assistant": "AI Assistant"
     }
 }}
 <div class="report-unlocker-filters mb-4">
@@ -79,7 +81,13 @@
                 {{str_clearfilters}}
             </button>
         </div>
-        <div class="mb-2 ms-auto">
+        <div class="mb-2 ms-auto d-flex align-items-center">
+            {{#aiavailable}}
+            <button type="button" id="report-unlocker-ai-btn"
+                    class="btn btn-outline-primary btn-sm me-2">
+                <i class="fa fa-robot me-1" aria-hidden="true"></i>{{str_ai_assistant}}
+            </button>
+            {{/aiavailable}}
             <button type="button"
                     id="unlocker-remove-all"
                     class="btn btn-outline-danger btn-sm"
