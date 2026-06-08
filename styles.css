@@ -37,6 +37,25 @@
     padding-inline-start: 0.75rem;
 }
 
+.path-report-unlocker .report-unlocker-filters label {
+    color: inherit;
+}
+
 .path-report-unlocker #unlocker-search {
     width: 22rem;
+}
+
+#report-unlocker-ai-modal .btn-close {
+    background-image: none;
+    background: transparent;
+    border: 0;
+    color: var(--white, #fff);
+    cursor: pointer;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1;
+    margin: -0.5rem -0.5rem -0.5rem auto;
+    opacity: 1;
+    padding: 0.5rem;
+    text-shadow: none;
 }

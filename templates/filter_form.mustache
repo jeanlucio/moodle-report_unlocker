@@ -44,10 +44,10 @@
 <div class="report-unlocker-filters mb-4">
     <div class="d-flex flex-wrap align-items-end">
         <div class="me-3 mb-2">
-            <label for="unlocker-section-filter" class="form-label">
+            <label for="unlocker-section-filter" class="form-label d-block">
                 {{str_filterbysection}}
             </label>
-            <select id="unlocker-section-filter" class="form-select">
+            <select id="unlocker-section-filter" class="form-select form-control">
                 <option value="-1">{{str_allsections}}</option>
                 {{#sections}}
                 <option value="{{num}}">{{name}}</option>
@@ -55,10 +55,10 @@
             </select>
         </div>
         <div class="me-3 mb-2">
-            <label for="unlocker-type-filter" class="form-label">
+            <label for="unlocker-type-filter" class="form-label d-block">
                 {{str_filterbytype}}
             </label>
-            <select id="unlocker-type-filter" class="form-select">
+            <select id="unlocker-type-filter" class="form-select form-control">
                 <option value="">{{str_alltypes}}</option>
                 {{#conditiontypes}}
                 <option value="{{type}}">{{label}}</option>
@@ -66,7 +66,7 @@
             </select>
         </div>
         <div class="me-3 mb-2">
-            <label for="unlocker-search" class="form-label">
+            <label for="unlocker-search" class="form-label d-block">
                 {{str_search}}
             </label>
             <input type="text"
