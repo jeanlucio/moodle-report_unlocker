@@ -44,7 +44,7 @@
                 <h5 class="modal-title" id="ru-ai-modal-label">
                     <i class="fa fa-robot me-2" aria-hidden="true"></i>{{str_title}}
                 </h5>
-                <button type="button" class="btn-close btn-close-white"
+                <button type="button" class="btn-close"
                         data-bs-dismiss="modal" data-dismiss="modal"
                         aria-label="{{str_close}}">
                     <span aria-hidden="true">&times;</span>
@@ -63,14 +63,13 @@
                     <button id="ru-ai-send-btn" class="btn btn-primary" type="button"
                             aria-label="{{str_send}}">
                         <i class="fa fa-paper-plane" aria-hidden="true"></i>
-                        <span class="visually-hidden sr-only">{{str_send}}</span>
                     </button>
                 </div>
 
                 {{! Spinner }}
                 <div id="ru-ai-spinner" class="text-center d-none mb-2" aria-live="polite">
                     <div class="spinner-border spinner-border-sm text-primary" role="status">
-                        <span class="visually-hidden sr-only">{{str_send}}</span>
+                        <span class="visually-hidden">{{str_send}}</span>
                     </div>
                 </div>
 

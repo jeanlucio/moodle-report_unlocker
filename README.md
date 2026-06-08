@@ -3,7 +3,7 @@
 [![Moodle Plugin CI](https://github.com/jeanlucio/moodle-report_unlocker/actions/workflows/ci.yml/badge.svg)](https://github.com/jeanlucio/moodle-report_unlocker/actions/workflows/ci.yml)
 ![Moodle](https://img.shields.io/badge/Moodle-4.5%2B-orange?style=flat-square&logo=moodle&logoColor=white)
 ![License](https://img.shields.io/badge/License-GPLv3-blue?style=flat-square)
-![Status](https://img.shields.io/badge/Status-Alpha-yellow?style=flat-square)
+![Status](https://img.shields.io/badge/Status-Stable-brightgreen?style=flat-square)
 
 [English](#english) | [Português](#português)
 
@@ -95,10 +95,9 @@ Unlocker simplifies common pedagogical scenarios:
   * **Search box:** Type to filter by activity name (real-time)
   * **Section dropdown:** Show restrictions only in a specific section
   * **Restriction Type dropdown:** Show only a specific type of condition
-* **Action Buttons:**
-  * **Edit (✏️):** Modify a restriction (opens the Moodle availability dialog)
-  * **Delete (🗑️):** Remove a single restriction
-  * **Delete All Visible:** Remove all restrictions currently shown after applying filters
+* **Inline Editing:** Each restriction is editable directly in the report — change dates, select groups, adjust grade thresholds, etc. without navigating away.
+* **Remove checkbox:** Mark individual restrictions for removal; click **Save all changes** once to persist every edit and deletion together.
+* **Remove all visible:** Marks all restrictions currently shown (respecting active filters) for removal and saves automatically after a confirmation dialog.
 
 #### Common Workflows
 
@@ -265,9 +264,13 @@ Em vez de editar manualmente as configurações de restrição de cada atividade
   * 🎮 **Baseada em PlayerHUD** — Restringe por nível, itens ou classe de personagem (requer `availability_playerhud` e `block_playerhud`)
   * 🔗 **Grupos de restrição aninhados** — Grupos AND/OR exibidos como **"Grupo de restrição aninhado (N)"** (onde `N` é o número de condições filhas). É possível ocultá-los dos estudantes ou abrir as configurações nativas da atividade para editar o grupo diretamente.
 * ✏️ **Gerenciamento em Massa:**
-  * Edite restrições diretamente no relatório
-  * Exclua restrições individuais
+  * Edite restrições diretamente no relatório (inline, sem sair da página)
+  * Marque restrições individuais para remoção e salve tudo de uma vez
   * Remova todas as restrições que correspondem ao filtro atual em uma ação
+  * **Seletor de operador** por atividade/seção: escolha se o estudante deve corresponder a *todas*, *qualquer*, *não todas* ou *nenhuma* das condições listadas
+  * **Controle de visibilidade por condição** (operadores *todas* / *nenhuma*): define se uma condição oculta aparece esmaecida ou invisível para o estudante
+  * **Controle de visibilidade global** (operadores *qualquer* / *não todas*): único flag aplicado a todo o grupo de condições
+* 🤖 **Assistente IA:** descreva em linguagem natural as mudanças desejadas; o assistente exibe uma prévia e só aplica após confirmação. Requer `core_ai` configurado no Moodle (4.5+) ou o plugin `local_playergames`.
 * 🎨 **Descrições Legíveis:** Cada restrição exibe um resumo amigável (ex: "Disponível após 2026-03-15 14:30")
 * 💾 **Modificações Seguras:** Verificação de chave de sessão protege contra mudanças acidentais em massa
 * 📱 **Design Responsivo:** Funciona em visualizações de desktop e tablet
@@ -322,10 +325,9 @@ Unlocker simplifica cenários pedagógicos comuns:
   * **Caixa de busca:** Digite para filtrar por nome da atividade (tempo real)
   * **Menu suspenso Seção:** Mostre restrições apenas em uma seção específica
   * **Menu suspenso Tipo de Restrição:** Mostre apenas um tipo específico de condição
-* **Botões de Ação:**
-  * **Editar (✏️):** Modifique uma restrição (abre o diálogo de disponibilidade do Moodle)
-  * **Excluir (🗑️):** Remova uma restrição individual
-  * **Excluir Todos os Visíveis:** Remova todas as restrições atualmente exibidas após aplicar filtros
+* **Edição inline:** Cada restrição é editável diretamente no relatório — altere datas, selecione grupos, ajuste limites de nota, etc. sem sair da página.
+* **Checkbox de remoção:** Marque restrições individuais para remoção; clique em **Salvar todas as alterações** uma única vez para persistir todas as edições e exclusões.
+* **Excluir todas as visíveis:** Marca todas as restrições visíveis no momento (respeitando os filtros ativos) para remoção e salva automaticamente após uma caixa de confirmação.
 
 #### Fluxos de Trabalho Comuns
 
