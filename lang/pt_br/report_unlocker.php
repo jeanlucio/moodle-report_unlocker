@@ -48,6 +48,7 @@ $string['allsections'] = 'Todas as seções';
 $string['alltypes'] = 'Todos os tipos';
 $string['anygroup'] = 'Qualquer grupo';
 $string['clearfilters'] = 'Limpar filtros';
+$string['close'] = 'Fechar';
 $string['completionstate'] = 'Estado esperado';
 $string['completionstate_complete'] = 'Concluída';
 $string['completionstate_complete_fail'] = 'Concluída com reprovação';

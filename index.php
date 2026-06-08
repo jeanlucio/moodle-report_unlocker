@@ -468,8 +468,10 @@ echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string('pluginname', 'report_unlocker'));
 
 if ($aiavailable) {
-    echo html_writer::tag('div',
-        html_writer::tag('button',
+    echo html_writer::tag(
+        'div',
+        html_writer::tag(
+            'button',
             html_writer::tag('i', '', ['class' => 'fa fa-robot me-2', 'aria-hidden' => 'true']) .
             get_string('ai_assistant', 'report_unlocker'),
             [
@@ -482,7 +484,7 @@ if ($aiavailable) {
     );
     echo $OUTPUT->render_from_template('report_unlocker/ai_chat_modal', [
         'str_title'        => get_string('ai_modal_title', 'report_unlocker'),
-        'str_close'        => get_string('close', 'core'),
+        'str_close'        => get_string('close', 'report_unlocker'),
         'str_placeholder'  => get_string('ai_input_placeholder', 'report_unlocker'),
         'str_send'         => get_string('ai_send', 'report_unlocker'),
         'str_preview_title' => get_string('ai_preview_title', 'report_unlocker'),

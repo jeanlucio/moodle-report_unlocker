@@ -48,6 +48,7 @@ $string['allsections'] = 'All sections';
 $string['alltypes'] = 'All types';
 $string['anygroup'] = 'Any group';
 $string['clearfilters'] = 'Clear filters';
+$string['close'] = 'Close';
 $string['completionstate'] = 'Expected state';
 $string['completionstate_complete'] = 'Completed';
 $string['completionstate_complete_fail'] = 'Completed with failing grade';
