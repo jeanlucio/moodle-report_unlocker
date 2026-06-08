@@ -32,7 +32,7 @@ Instead of manually editing each activity's restriction settings one by one, Unl
   * 📊 **Grade-based** — Restrict by activity grades (minimum, maximum, range)
   * ✅ **Completion-based** — Restrict by activity completion status
   * 🆔 **Profile-based** — Restrict by user profile fields (standard and custom fields)
-  * 🎮 **PlayerHUD-based** — Restrict by player level, items, or character class (when PlayerHUD is installed)
+  * 🎮 **PlayerHUD-based** — Restrict by player level, items, or character class (requires `availability_playerhud` and `block_playerhud`)
 * ✏️ **Bulk Management:**
   * Edit restrictions directly from the report
   * Delete individual restrictions
@@ -132,7 +132,7 @@ Unlocker simplifies common pedagogical scenarios:
 | **Grade** | Restricts based on a grade item's score (min/max/range). | "Requires minimum 70% in Quiz 1" |
 | **Completion** | Restricts based on activity completion status. | "Requires: Quiz 2 completed with pass" |
 | **Profile** | Restricts based on user profile fields (standard or custom). | "Visible to: Department = Engineering" |
-| **PlayerHUD** | (Requires `block_playerhud`) Restricts by player progression. | "Requires: Level ≥ 5", "Must own: Dragon Egg" |
+| **PlayerHUD** | (Requires `availability_playerhud` + `block_playerhud`) Restricts by player progression. | "Requires: Level ≥ 5", "Must own: Dragon Egg" |
 
 ---
 
@@ -183,15 +183,14 @@ vendor/bin/moodle-plugin-ci behat --profile chrome
 
 ### 🤝 Integration with Other Plugins
 
-#### PlayerHUD Block
+#### PlayerHUD
 
-If **PlayerHUD** (`block_playerhud`) is installed, Unlocker detects and displays PlayerHUD-based restrictions:
+If both **`availability_playerhud`** and **`block_playerhud`** are installed, Unlocker detects and displays PlayerHUD-based restrictions:
 
-* **Level restrictions:** Show required player level
-* **Item restrictions:** Show required items and quantities
-* **Character class restrictions:** Show restricted character classes
+* `availability_playerhud` registers the `playerhud` condition type in Moodle's availability system.
+* `block_playerhud` stores the item and class data that the condition references.
 
-The integration is automatic — no additional configuration needed.
+Unlocker reads item and class names from `block_playerhud` tables to populate the edit selectors. The integration is automatic — no additional configuration needed.
 
 ---
 
@@ -274,7 +273,7 @@ Em vez de editar manualmente as configurações de restrição de cada atividade
   * 📊 **Baseada em nota** — Restringe por notas de atividades (mínima, máxima, intervalo)
   * ✅ **Baseada em conclusão** — Restringe por status de conclusão de atividades
   * 🆔 **Baseada em perfil** — Restringe por campos de perfil do usuário (padrão ou customizados)
-  * 🎮 **Baseada em PlayerHUD** — Restringe por nível, itens ou classe de personagem (quando PlayerHUD está instalado)
+  * 🎮 **Baseada em PlayerHUD** — Restringe por nível, itens ou classe de personagem (requer `availability_playerhud` e `block_playerhud`)
 * ✏️ **Gerenciamento em Massa:**
   * Edite restrições diretamente no relatório
   * Exclua restrições individuais
@@ -371,7 +370,7 @@ Unlocker simplifica cenários pedagógicos comuns:
 | **Nota** | Restringe com base na nota de um item de avaliação (mín/máx/intervalo). | "Requer nota mínima 70% no Quiz 1" |
 | **Conclusão** | Restringe com base no status de conclusão de uma atividade. | "Requer: Quiz 2 concluído com aprovação" |
 | **Perfil** | Restringe com base em campos de perfil do usuário (padrão ou customizados). | "Visível para: Departamento = Engenharia" |
-| **PlayerHUD** | (Requer `block_playerhud`) Restringe pela progressão do jogador. | "Requer: Nível ≥ 5", "Deve possuir: Ovo de Dragão" |
+| **PlayerHUD** | (Requer `availability_playerhud` + `block_playerhud`) Restringe pela progressão do jogador. | "Requer: Nível ≥ 5", "Deve possuir: Ovo de Dragão" |
 
 ---
 
@@ -422,15 +421,14 @@ vendor/bin/moodle-plugin-ci behat --profile chrome
 
 ### 🤝 Integração com Outros Plugins
 
-#### Block PlayerHUD
+#### PlayerHUD
 
-Se **PlayerHUD** (`block_playerhud`) estiver instalado, Unlocker detecta e exibe restrições baseadas em PlayerHUD:
+Se **`availability_playerhud`** e **`block_playerhud`** estiverem instalados, Unlocker detecta e exibe restrições baseadas em PlayerHUD:
 
-* **Restrições de nível:** Exibe nível de jogador necessário
-* **Restrições de item:** Exibe itens necessários e quantidades
-* **Restrições de classe de personagem:** Exibe classes de personagem restritas
+* `availability_playerhud` registra o tipo de condição `playerhud` no sistema de disponibilidade do Moodle.
+* `block_playerhud` armazena os dados de itens e classes referenciados pela condição.
 
-A integração é automática — nenhuma configuração adicional necessária.
+O Unlocker lê os nomes de itens e classes das tabelas do `block_playerhud` para preencher os seletores de edição. A integração é automática — nenhuma configuração adicional necessária.
 
 ---
 
