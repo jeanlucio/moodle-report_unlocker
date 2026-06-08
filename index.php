@@ -67,8 +67,9 @@ if ($fromform = $mform->get_data()) {
 
     $moduleupdates = [];
     foreach ($moduleentries as $mc) {
-        $updates  = [];
-        $removals = [];
+        $updates      = [];
+        $removals     = [];
+        $showcupdates = [];
 
         foreach ($mc['conditions'] as $cond) {
             $index      = $cond['index'];
@@ -205,17 +206,42 @@ if ($fromform = $mform->get_data()) {
                     }
                     break;
             }
+
+            $showcname = 'mod_' . $mc['id'] . '_' . $index . '_showc';
+            if (property_exists($fromform, $showcname)) {
+                $showcupdates[$index] = (bool) $fromform->$showcname;
+            }
         }
 
-        if (!empty($updates) || !empty($removals)) {
-            $moduleupdates[] = ['cmid' => $mc['id'], 'updates' => $updates, 'removals' => $removals];
+        $opname   = 'mod_' . $mc['id'] . '_op';
+        $validops = ['&', '|', '!&', '!|'];
+        $opvalue  = property_exists($fromform, $opname) ? (string) $fromform->$opname : null;
+        if ($opvalue !== null && !in_array($opvalue, $validops, true)) {
+            $opvalue = null;
+        }
+
+        $showname    = 'mod_' . $mc['id'] . '_show';
+        $currentshow = (bool) ($mc['show'] ?? true);
+        $submitshow  = property_exists($fromform, $showname) ? (bool) $fromform->$showname : $currentshow;
+        $showvalue   = $submitshow !== $currentshow ? $submitshow : null;
+
+        if (!empty($updates) || !empty($removals) || $opvalue !== null || !empty($showcupdates) || $showvalue !== null) {
+            $moduleupdates[] = [
+                'cmid'         => $mc['id'],
+                'updates'      => $updates,
+                'removals'     => $removals,
+                'op'           => $opvalue,
+                'showcupdates' => $showcupdates,
+                'show'         => $showvalue,
+            ];
         }
     }
 
     $sectionupdates = [];
     foreach ($sectionentries as $sc) {
-        $updates  = [];
-        $removals = [];
+        $updates      = [];
+        $removals     = [];
+        $showcupdates = [];
 
         foreach ($sc['conditions'] as $cond) {
             $index      = $cond['index'];
@@ -352,10 +378,34 @@ if ($fromform = $mform->get_data()) {
                     }
                     break;
             }
+
+            $showcname = 'sec_' . $sc['id'] . '_' . $index . '_showc';
+            if (property_exists($fromform, $showcname)) {
+                $showcupdates[$index] = (bool) $fromform->$showcname;
+            }
         }
 
-        if (!empty($updates) || !empty($removals)) {
-            $sectionupdates[] = ['sectionid' => $sc['id'], 'updates' => $updates, 'removals' => $removals];
+        $opname   = 'sec_' . $sc['id'] . '_op';
+        $validops = ['&', '|', '!&', '!|'];
+        $opvalue  = property_exists($fromform, $opname) ? (string) $fromform->$opname : null;
+        if ($opvalue !== null && !in_array($opvalue, $validops, true)) {
+            $opvalue = null;
+        }
+
+        $showname    = 'sec_' . $sc['id'] . '_show';
+        $currentshow = (bool) ($sc['show'] ?? true);
+        $submitshow  = property_exists($fromform, $showname) ? (bool) $fromform->$showname : $currentshow;
+        $showvalue   = $submitshow !== $currentshow ? $submitshow : null;
+
+        if (!empty($updates) || !empty($removals) || $opvalue !== null || !empty($showcupdates) || $showvalue !== null) {
+            $sectionupdates[] = [
+                'sectionid'    => $sc['id'],
+                'updates'      => $updates,
+                'removals'     => $removals,
+                'op'           => $opvalue,
+                'showcupdates' => $showcupdates,
+                'show'         => $showvalue,
+            ];
         }
     }
 

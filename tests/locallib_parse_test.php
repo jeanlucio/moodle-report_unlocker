@@ -174,4 +174,49 @@ final class locallib_parse_test extends \basic_testcase {
         $this->assertSame(2, $result[1]['index']);
         $this->assertSame('completion', $result[1]['type']);
     }
+
+    public function test_showc_value_returned_per_condition(): void {
+        $json = json_encode([
+            'c'     => [
+                ['type' => 'group', 'id' => 1],
+                ['type' => 'date', 'd' => '>=', 't' => 1000],
+            ],
+            'showc' => [false, true],
+        ]);
+
+        $result = report_unlocker_parse_all_conditions($json);
+
+        $this->assertCount(2, $result);
+        $this->assertFalse($result[0]['showc']);
+        $this->assertTrue($result[1]['showc']);
+    }
+
+    public function test_showc_defaults_to_true_when_missing(): void {
+        $json = json_encode([
+            'c' => [['type' => 'group', 'id' => 1]],
+        ]);
+
+        $result = report_unlocker_parse_all_conditions($json);
+
+        $this->assertCount(1, $result);
+        $this->assertTrue($result[0]['showc']);
+    }
+
+    public function test_showc_key_present_in_every_returned_entry(): void {
+        $json = json_encode([
+            'c'     => [
+                ['type' => 'completion', 'cm' => 5, 'e' => 1],
+                ['type' => 'grade', 'id' => 10],
+                ['type' => 'date', 'd' => '>=', 't' => 0],
+            ],
+            'showc' => [true, false, true],
+        ]);
+
+        $result = report_unlocker_parse_all_conditions($json);
+
+        foreach ($result as $cond) {
+            $this->assertArrayHasKey('showc', $cond);
+        }
+        $this->assertSame([true, false, true], array_column($result, 'showc'));
+    }
 }

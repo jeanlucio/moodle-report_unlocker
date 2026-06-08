@@ -37,7 +37,10 @@ Instead of manually editing each activity's restriction settings one by one, Unl
   * Edit restrictions directly from the report
   * Delete individual restrictions
   * Remove all restrictions matching the current filter in one action
-* 🎨 **Readable Descriptions:** Each restriction displays a human-friendly summary (e.g., "Created after 2026-03-15 14:30")
+  * **Operator selector** per activity/section: choose whether the student must match *all*, *any*, *not all*, or *not any* of the listed conditions
+  * **Visibility toggle per condition** (operator *all* / *not any*): control whether a hidden condition is shown greyed-out or fully invisible to students
+  * **Global visibility toggle** (operator *any* / *not all*): single flag applied to all conditions in the group
+* 🎨 **Readable Descriptions**: Each restriction displays a human-friendly summary (e.g., "Created after 2026-03-15 14:30")
 * 💾 **Safe Modifications:** Session key verification protects against accidental bulk changes
 * 📱 **Responsive Design:** Works on desktop and tablet views
 
@@ -150,12 +153,12 @@ Unlocker includes a comprehensive test suite covering business logic (PHPUnit) a
 
 | Test file | Cases | What is covered |
 |-----------|------:|----------------|
-| `locallib_parse_test.php` | 18 | Condition parsing: all supported types are correctly parsed from Moodle's availability JSON |
-| `locallib_apply_test.php` | 12 | Applying filters: section, activity name, restriction type filters work independently and in combination |
-| `locallib_save_test.php` | 8 | Saving modifications: delete single condition, delete all visible, XOR with `showc` flag management |
+| `locallib_parse_test.php` | 21 | Condition parsing: all supported types, `showc` per-condition value, missing `showc` defaults |
+| `locallib_apply_test.php` | 28 | Field updates, removals, `opchange` (all 4 operators), `showcupdates`, `showchange`, op-mode transitions |
+| `locallib_save_test.php` | 13 | DB persistence: field updates, `op`, per-condition `showc`, global `show`, op transitions, cross-course isolation |
 | `locallib_integration_test.php` | 6 | Cross-type integration: mixed restriction types in same activity, edge cases |
 | `privacy_provider_test.php` | 2 | GDPR compliance: plugin declares no user data retention |
-| **Total** | **46** | |
+| **Total** | **70** | |
 
 ```bash
 vendor/bin/phpunit --testsuite report_unlocker
@@ -209,7 +212,8 @@ All restriction descriptions are translated and displayed in the user's language
 |---------|----------|--------|
 | **0.2.0** | Core filters, date/group/grouping/grade/completion/profile/playerhud support, bulk delete | ✅ Done |
 | **0.3.0** | Behat acceptance tests (29 scenarios across 5 feature files) | ✅ Done |
-| **0.4.0** | Nested restriction groups (read-only display) | Planned |
+| **0.4.0** | Operator selector and per-condition / global visibility toggle | ✅ Done |
+| **0.5.0** | Nested restriction groups (read-only display) | Planned |
 | **1.0.0** | Stable release, full edit UI for all restriction types | Planned |
 
 ---
@@ -388,12 +392,12 @@ Unlocker inclui uma suíte de testes abrangente cobrindo lógica de negócio (PH
 
 | Arquivo de teste | Casos | O que é coberto |
 |------------------|------:|-----------------|
-| `locallib_parse_test.php` | 18 | Análise de condições: todos os tipos suportados são corretamente analisados do JSON de disponibilidade do Moodle |
-| `locallib_apply_test.php` | 12 | Aplicação de filtros: filtros de seção, nome de atividade, tipo de restrição funcionam independentemente e em combinação |
-| `locallib_save_test.php` | 8 | Salvando modificações: excluir condição única, excluir todos os visíveis, gestão de flag `showc` |
+| `locallib_parse_test.php` | 21 | Análise de condições: todos os tipos suportados, valor `showc` por condição, padrões quando `showc` está ausente |
+| `locallib_apply_test.php` | 28 | Atualização de campos, remoções, `opchange` (4 operadores), `showcupdates`, `showchange`, transições de modo |
+| `locallib_save_test.php` | 13 | Persistência no BD: atualizações, campo `op`, `showc` por condição, `show` global, transições, isolamento entre cursos |
 | `locallib_integration_test.php` | 6 | Integração entre tipos: tipos de restrição mistos na mesma atividade, casos extremos |
 | `privacy_provider_test.php` | 2 | Conformidade GDPR: plugin declara nenhuma retenção de dados do usuário |
-| **Total** | **46** | |
+| **Total** | **70** | |
 
 ```bash
 vendor/bin/phpunit --testsuite report_unlocker
@@ -447,7 +451,8 @@ Todas as descrições de restrição são traduzidas e exibidas no idioma do usu
 |--------|-----------------|--------|
 | **0.2.0** | Filtros principais, suporte data/grupo/agrupamento/nota/conclusão/perfil/playerhud, exclusão em massa | ✅ Concluído |
 | **0.3.0** | Testes de aceitação Behat (29 cenários em 5 feature files) | ✅ Concluído |
-| **0.4.0** | Grupos de restrição aninhados (somente leitura) | Planejado |
+| **0.4.0** | Seletor de operador e alternador de visibilidade por condição / global | ✅ Concluído |
+| **0.5.0** | Grupos de restrição aninhados (somente leitura) | Planejado |
 | **1.0.0** | Versão estável, UI de edição completa para todos os tipos de restrição | Planejado |
 
 ---

@@ -48,6 +48,7 @@ function report_unlocker_parse_all_conditions(?string $availability): array {
             'index' => $index,
             'type'  => $condition['type'],
             'data'  => $condition,
+            'showc' => $data['showc'][$index] ?? true,
         ];
     }
 
@@ -302,12 +303,15 @@ function report_unlocker_get_module_conditions(int $courseid): array {
         if (empty($conditions)) {
             continue;
         }
+        $availdata = json_decode($cm->availability ?? '', true);
         $results[] = [
             'type'       => 'module',
             'id'         => (int) $cm->id,
             'name'       => $cm->name,
             'modname'    => $cm->modname,
             'sectionnum' => (int) $cm->sectionnum,
+            'op'         => $availdata['op'] ?? '&',
+            'show'       => $availdata['show'] ?? true,
             'conditions' => $conditions,
             'types'      => array_values(array_unique(array_column($conditions, 'type'))),
         ];
@@ -338,6 +342,7 @@ function report_unlocker_get_section_conditions(int $courseid): array {
         if (empty($conditions)) {
             continue;
         }
+        $availdata   = json_decode($section->availability ?? '', true);
         $sectionname = $section->name
             ?: get_string('section', 'report_unlocker', $section->section);
         $results[] = [
@@ -345,6 +350,8 @@ function report_unlocker_get_section_conditions(int $courseid): array {
             'id'         => (int) $section->id,
             'name'       => $sectionname,
             'sectionnum' => (int) $section->section,
+            'op'         => $availdata['op'] ?? '&',
+            'show'       => $availdata['show'] ?? true,
             'conditions' => $conditions,
             'types'      => array_values(array_unique(array_column($conditions, 'type'))),
         ];
@@ -362,18 +369,27 @@ function report_unlocker_get_section_conditions(int $courseid): array {
  * @param string|null $rawjson Original JSON.
  * @param array $updates Map of conditionindex => [field => value|null] (null = unset field).
  * @param array $removals List of condition indices to remove.
+ * @param string|null $opchange New operator value ('&', '|', '!&', '!|') or null to keep existing.
+ * @param array $showcupdates Map of conditionindex => bool for showc overrides.
+ * @param bool|null $showchange New global show value (only for op '|' or '!&'), null to keep existing.
  * @return array [string|null $newjson, bool $changed].
  */
 function report_unlocker_apply_condition_changes(
     ?string $rawjson,
     array $updates,
-    array $removals
+    array $removals,
+    ?string $opchange = null,
+    array $showcupdates = [],
+    ?bool $showchange = null
 ): array {
     if (empty($rawjson)) {
         return [null, false];
     }
 
-    if (empty($updates) && empty($removals)) {
+    if (
+        empty($updates) && empty($removals) &&
+        $opchange === null && empty($showcupdates) && $showchange === null
+    ) {
         return [$rawjson, false];
     }
 
@@ -398,15 +414,31 @@ function report_unlocker_apply_condition_changes(
             }
         }
         $newc[]     = $cond;
-        $newshowc[] = $availability['showc'][$index] ?? true;
+        $newshowc[] = isset($showcupdates[$index])
+            ? (bool) $showcupdates[$index]
+            : ($availability['showc'][$index] ?? true);
     }
 
     if (empty($newc)) {
         return [null, true];
     }
 
-    $availability['c']     = $newc;
-    $availability['showc'] = $newshowc;
+    $finalop        = $opchange ?? ($availability['op'] ?? '&');
+    $usesglobalshow = in_array($finalop, ['|', '!&'], true);
+
+    if ($opchange !== null) {
+        $availability['op'] = $opchange;
+    }
+    $availability['c'] = $newc;
+
+    if ($usesglobalshow) {
+        $availability['show'] = $showchange !== null ? $showchange : ($availability['show'] ?? true);
+        unset($availability['showc']);
+    } else {
+        $availability['showc'] = $newshowc;
+        unset($availability['show']);
+    }
+
     $newjson = json_encode($availability);
     return [$newjson, $newjson !== $rawjson];
 }
@@ -452,7 +484,10 @@ function report_unlocker_save_module_conditions(int $courseid, array $moduleupda
         [$newjson, $changed] = report_unlocker_apply_condition_changes(
             $cms[$cmid]->availability,
             $update['updates'] ?? [],
-            $update['removals'] ?? []
+            $update['removals'] ?? [],
+            $update['op'] ?? null,
+            $update['showcupdates'] ?? [],
+            isset($update['show']) ? (bool) $update['show'] : null
         );
 
         if (!$changed) {
@@ -512,7 +547,10 @@ function report_unlocker_save_section_conditions(int $courseid, array $sectionup
         [$newjson, $changed] = report_unlocker_apply_condition_changes(
             $sections[$sectionid]->availability,
             $update['updates'] ?? [],
-            $update['removals'] ?? []
+            $update['removals'] ?? [],
+            $update['op'] ?? null,
+            $update['showcupdates'] ?? [],
+            isset($update['show']) ? (bool) $update['show'] : null
         );
 
         if (!$changed) {

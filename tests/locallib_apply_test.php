@@ -41,13 +41,14 @@ final class locallib_apply_test extends \basic_testcase {
      *
      * @param array $conditions
      * @param array $showc
+     * @param string $op
      * @return string
      */
-    private function make_json(array $conditions, array $showc = []): string {
+    private function make_json(array $conditions, array $showc = [], string $op = '&'): string {
         if (empty($showc)) {
             $showc = array_fill(0, count($conditions), true);
         }
-        return json_encode(['op' => '&', 'c' => $conditions, 'showc' => $showc]);
+        return json_encode(['op' => $op, 'c' => $conditions, 'showc' => $showc]);
     }
 
     public function test_null_json_returns_null_and_no_change(): void {
@@ -266,5 +267,143 @@ final class locallib_apply_test extends \basic_testcase {
         $this->assertSame('endswith', $decoded['c'][0]['op']);
         $this->assertSame('@new.com', $decoded['c'][0]['v']);
         $this->assertSame('email', $decoded['c'][0]['sf']);
+    }
+
+    // Opchange tests.
+
+    public function test_opchange_updates_op_field(): void {
+        $raw = $this->make_json([['type' => 'date', 'd' => '>=', 't' => 1000]], [], '&');
+
+        [$newjson, $changed] = report_unlocker_apply_condition_changes($raw, [], [], '|');
+
+        $this->assertTrue($changed);
+        $decoded = json_decode($newjson, true);
+        $this->assertSame('|', $decoded['op']);
+    }
+
+    public function test_opchange_null_preserves_existing_op(): void {
+        $raw = $this->make_json([['type' => 'date', 'd' => '>=', 't' => 1000]], [], '!&');
+
+        [$newjson, $changed] = report_unlocker_apply_condition_changes($raw, [], []);
+
+        $this->assertFalse($changed);
+        $decoded = json_decode($raw, true);
+        $this->assertSame('!&', $decoded['op']);
+    }
+
+    public function test_opchange_to_same_value_returns_false_changed(): void {
+        $raw = $this->make_json([['type' => 'date', 'd' => '>=', 't' => 1000]], [], '&');
+
+        [$newjson, $changed] = report_unlocker_apply_condition_changes($raw, [], [], '&');
+
+        $this->assertFalse($changed);
+    }
+
+    // Showcupdates tests: per-condition visibility, used with op and/or not-any.
+
+    public function test_showcupdates_flips_single_condition_visibility(): void {
+        $raw = $this->make_json(
+            [['type' => 'group', 'id' => 1], ['type' => 'date', 'd' => '>=', 't' => 5000]],
+            [true, true]
+        );
+
+        [$newjson, $changed] = report_unlocker_apply_condition_changes($raw, [], [], null, [1 => false]);
+
+        $this->assertTrue($changed);
+        $decoded = json_decode($newjson, true);
+        $this->assertTrue($decoded['showc'][0]);
+        $this->assertFalse($decoded['showc'][1]);
+    }
+
+    public function test_showcupdates_reindexed_after_removal(): void {
+        $raw = $this->make_json(
+            [
+                ['type' => 'group', 'id' => 1],
+                ['type' => 'date', 'd' => '>=', 't' => 5000],
+                ['type' => 'group', 'id' => 2],
+            ],
+            [false, true, false]
+        );
+
+        // Remove index 1; showcupdates override index 0 to true.
+        [$newjson, $changed] = report_unlocker_apply_condition_changes($raw, [], [1], null, [0 => true]);
+
+        $this->assertTrue($changed);
+        $decoded = json_decode($newjson, true);
+        $this->assertCount(2, $decoded['c']);
+        $this->assertSame([true, false], $decoded['showc']);
+    }
+
+    // Showchange tests: global visibility flag, used with op or/not-all.
+
+    public function test_showchange_writes_global_show_and_removes_showc(): void {
+        $raw = $this->make_json([['type' => 'group', 'id' => 1]], [true], '|');
+
+        [$newjson, $changed] = report_unlocker_apply_condition_changes($raw, [], [], null, [], false);
+
+        $this->assertTrue($changed);
+        $decoded = json_decode($newjson, true);
+        $this->assertFalse($decoded['show']);
+        $this->assertArrayNotHasKey('showc', $decoded);
+    }
+
+    public function test_showchange_null_preserves_existing_show(): void {
+        $raw = json_encode(['op' => '|', 'c' => [['type' => 'group', 'id' => 1]], 'show' => false]);
+
+        [$newjson, $changed] = report_unlocker_apply_condition_changes($raw, [], []);
+
+        $this->assertFalse($changed);
+        $decoded = json_decode($raw, true);
+        $this->assertFalse($decoded['show']);
+    }
+
+    // Op transition: and to or — showc must be removed and show written.
+
+    public function test_op_transition_and_to_or_switches_show_mechanism(): void {
+        $raw = $this->make_json(
+            [['type' => 'group', 'id' => 1], ['type' => 'date', 'd' => '>=', 't' => 1000]],
+            [true, false],
+            '&'
+        );
+
+        [$newjson, $changed] = report_unlocker_apply_condition_changes($raw, [], [], '|', [], true);
+
+        $this->assertTrue($changed);
+        $decoded = json_decode($newjson, true);
+        $this->assertSame('|', $decoded['op']);
+        $this->assertTrue($decoded['show']);
+        $this->assertArrayNotHasKey('showc', $decoded);
+    }
+
+    // Op transition: or to and — show must be removed and showc written.
+
+    public function test_op_transition_or_to_and_switches_show_mechanism(): void {
+        $raw = json_encode(['op' => '|', 'c' => [['type' => 'group', 'id' => 1]], 'show' => false]);
+
+        [$newjson, $changed] = report_unlocker_apply_condition_changes(
+            $raw,
+            [],
+            [],
+            '&',
+            [0 => true]
+        );
+
+        $this->assertTrue($changed);
+        $decoded = json_decode($newjson, true);
+        $this->assertSame('&', $decoded['op']);
+        $this->assertSame([true], $decoded['showc']);
+        $this->assertArrayNotHasKey('show', $decoded);
+    }
+
+    public function test_all_four_operators_accepted(): void {
+        foreach (['&', '|', '!&', '!|'] as $op) {
+            $raw = $this->make_json([['type' => 'group', 'id' => 1]], [], '&');
+            [, $changed] = report_unlocker_apply_condition_changes($raw, [], [], $op);
+            if ($op === '&') {
+                $this->assertFalse($changed, "op '$op' identical, should not change");
+            } else {
+                $this->assertTrue($changed, "op '$op' differs, should change");
+            }
+        }
     }
 }

@@ -75,6 +75,7 @@ class conditions_form extends moodleform {
                     'html',
                     html_writer::tag('h5', format_string($mc['name']), ['class' => 'report-unlocker-entry-title'])
                 );
+                $this->render_op_row('mod_' . $mc['id'], $mc['op'] ?? '&', (bool) ($mc['show'] ?? true));
 
                 foreach ($mc['conditions'] as $cond) {
                     $this->render_condition(
@@ -108,6 +109,7 @@ class conditions_form extends moodleform {
                     'html',
                     html_writer::tag('h5', format_string($sc['name']), ['class' => 'report-unlocker-entry-title'])
                 );
+                $this->render_op_row('sec_' . $sc['id'], $sc['op'] ?? '&', (bool) ($sc['show'] ?? true));
 
                 foreach ($sc['conditions'] as $cond) {
                     $this->render_condition(
@@ -168,6 +170,14 @@ class conditions_form extends moodleform {
             get_string('removecondition', 'report_unlocker')
         );
 
+        $showcname = $prefix . '_' . $index . '_showc';
+        $showcelem = $mform->createElement(
+            'advcheckbox',
+            $showcname,
+            '',
+            get_string('showcondition', 'report_unlocker')
+        );
+
         $mform->addElement('html', html_writer::start_tag('div', [
             'class'         => 'report-unlocker-condition',
             'data-condtype' => $type,
@@ -180,7 +190,13 @@ class conditions_form extends moodleform {
                     ? get_string('dateafter', 'report_unlocker')
                     : get_string('datebefore', 'report_unlocker');
                 $dtelem    = $mform->createElement('date_time_selector', $fieldname, '', ['optional' => false]);
-                $mform->addGroup([$dtelem, $removeelem], 'grp_' . $fieldname, $label, ['&nbsp;&nbsp;'], false);
+                $mform->addGroup(
+                    [$dtelem, $showcelem, $removeelem],
+                    'grp_' . $fieldname,
+                    $label,
+                    ['&nbsp;&nbsp;', '&nbsp;&nbsp;'],
+                    false
+                );
                 $mform->setDefault($fieldname, $data['t'] ?? 0);
                 break;
 
@@ -188,10 +204,10 @@ class conditions_form extends moodleform {
                 $fieldname  = $prefix . '_' . $index . '_group';
                 $selectelem = $mform->createElement('select', $fieldname, '', $groupoptions);
                 $mform->addGroup(
-                    [$selectelem, $removeelem],
+                    [$selectelem, $showcelem, $removeelem],
                     'grp_' . $fieldname,
                     get_string('conditiontype_group', 'report_unlocker'),
-                    ['&nbsp;&nbsp;'],
+                    ['&nbsp;&nbsp;', '&nbsp;&nbsp;'],
                     false
                 );
                 $mform->setType($fieldname, PARAM_INT);
@@ -202,10 +218,10 @@ class conditions_form extends moodleform {
                 $fieldname  = $prefix . '_' . $index . '_grouping';
                 $selectelem = $mform->createElement('select', $fieldname, '', $groupingoptions);
                 $mform->addGroup(
-                    [$selectelem, $removeelem],
+                    [$selectelem, $showcelem, $removeelem],
                     'grp_' . $fieldname,
                     get_string('conditiontype_grouping', 'report_unlocker'),
-                    ['&nbsp;&nbsp;'],
+                    ['&nbsp;&nbsp;', '&nbsp;&nbsp;'],
                     false
                 );
                 $mform->setType($fieldname, PARAM_INT);
@@ -213,19 +229,19 @@ class conditions_form extends moodleform {
                 break;
 
             case 'grade':
-                $this->render_grade_condition($prefix, $index, $data, $gradeitems, $removeelem);
+                $this->render_grade_condition($prefix, $index, $data, $gradeitems, $showcelem, $removeelem);
                 break;
 
             case 'completion':
-                $this->render_completion_condition($prefix, $index, $data, $completioncms, $removeelem);
+                $this->render_completion_condition($prefix, $index, $data, $completioncms, $showcelem, $removeelem);
                 break;
 
             case 'profile':
-                $this->render_profile_condition($prefix, $index, $data, $profilefields, $removeelem);
+                $this->render_profile_condition($prefix, $index, $data, $profilefields, $showcelem, $removeelem);
                 break;
 
             case 'playerhud':
-                $this->render_playerhud_condition($prefix, $index, $data, $playerhuddata, $removeelem);
+                $this->render_playerhud_condition($prefix, $index, $data, $playerhuddata, $showcelem, $removeelem);
                 break;
 
             default:
@@ -241,14 +257,19 @@ class conditions_form extends moodleform {
                     get_string('conditionreadonly', 'report_unlocker')
                 );
                 $mform->addGroup(
-                    [$staticelem, $removeelem],
+                    [$staticelem, $showcelem, $removeelem],
                     'grp_readonly_' . $prefix . '_' . $index,
                     $typelabel,
-                    ['&nbsp;&nbsp;'],
+                    ['&nbsp;&nbsp;', '&nbsp;&nbsp;'],
                     false
                 );
                 break;
         }
+
+        $mform->setDefault($showcname, (int) ($cond['showc'] ?? 1));
+        $mform->setType($showcname, PARAM_INT);
+        $mform->hideIf($showcname, $prefix . '_op', 'eq', '|');
+        $mform->hideIf($showcname, $prefix . '_op', 'eq', '!&');
 
         $mform->setDefault($removename, 0);
         $mform->setType($removename, PARAM_INT);
@@ -266,6 +287,7 @@ class conditions_form extends moodleform {
      * @param int $index Condition index within the availability array.
      * @param array $data Raw condition data from the availability JSON.
      * @param array $gradeitems Grade item options (id => name).
+     * @param object $showcelem The pre-created advcheckbox element for the showc toggle.
      * @param object $removeelem The pre-created advcheckbox element for removal.
      * @return void
      */
@@ -274,6 +296,7 @@ class conditions_form extends moodleform {
         int $index,
         array $data,
         array $gradeitems,
+        object $showcelem,
         object $removeelem
     ): void {
         $mform    = $this->_form;
@@ -287,10 +310,10 @@ class conditions_form extends moodleform {
         $selectelem = $mform->createElement('select', $fnameid, '', $gradeopts);
 
         $mform->addGroup(
-            [$selectelem, $removeelem],
+            [$selectelem, $showcelem, $removeelem],
             'grp_' . $fnameid,
             get_string('conditiontype_grade', 'report_unlocker'),
-            ['&nbsp;&nbsp;'],
+            ['&nbsp;&nbsp;', '&nbsp;&nbsp;'],
             false
         );
         $mform->setType($fnameid, PARAM_INT);
@@ -333,6 +356,7 @@ class conditions_form extends moodleform {
      * @param int $index Condition index within the availability array.
      * @param array $data Raw condition data from the availability JSON.
      * @param array $completioncms Course module options (id => name).
+     * @param object $showcelem The pre-created advcheckbox element for the showc toggle.
      * @param object $removeelem The pre-created advcheckbox element for removal.
      * @return void
      */
@@ -341,6 +365,7 @@ class conditions_form extends moodleform {
         int $index,
         array $data,
         array $completioncms,
+        object $showcelem,
         object $removeelem
     ): void {
         $mform   = $this->_form;
@@ -373,10 +398,10 @@ class conditions_form extends moodleform {
         $stateselect = $mform->createElement('select', $fnamee, '', $stateoptions);
 
         $mform->addGroup(
-            [$cmselect, $statelabel, $stateselect, $removeelem],
+            [$cmselect, $statelabel, $stateselect, $showcelem, $removeelem],
             'grp_' . $fnamecm,
             get_string('conditiontype_completion', 'report_unlocker'),
-            ['', '', '&nbsp;&nbsp;'],
+            ['', '', '&nbsp;&nbsp;', '&nbsp;&nbsp;'],
             false
         );
         $mform->setType($fnamecm, PARAM_INT);
@@ -395,6 +420,7 @@ class conditions_form extends moodleform {
      * @param int $index Condition index within the availability array.
      * @param array $data Raw condition data from the availability JSON.
      * @param array $profilefields Nested options for the field select (optgroups).
+     * @param object $showcelem The pre-created advcheckbox element for the showc toggle.
      * @param object $removeelem The pre-created advcheckbox element for removal.
      * @return void
      */
@@ -403,6 +429,7 @@ class conditions_form extends moodleform {
         int $index,
         array $data,
         array $profilefields,
+        object $showcelem,
         object $removeelem
     ): void {
         $mform       = $this->_form;
@@ -433,10 +460,10 @@ class conditions_form extends moodleform {
         $opselect = $mform->createElement('select', $fnameop, '', $operators);
 
         $mform->addGroup(
-            [$fieldselect, $oplabel, $opselect, $removeelem],
+            [$fieldselect, $oplabel, $opselect, $showcelem, $removeelem],
             'grp_' . $fnamefield,
             get_string('conditiontype_profile', 'report_unlocker'),
-            ['', '', '&nbsp;&nbsp;'],
+            ['', '', '&nbsp;&nbsp;', '&nbsp;&nbsp;'],
             false
         );
         $mform->setType($fnamefield, PARAM_TEXT);
@@ -473,6 +500,7 @@ class conditions_form extends moodleform {
      * @param int $index Condition index within the availability array.
      * @param array $data Raw condition data from the availability JSON.
      * @param array $playerhuddata Items and classes: ['items' => [id => name], 'classes' => [id => name]].
+     * @param object $showcelem The pre-created advcheckbox element for the showc toggle.
      * @param object $removeelem The pre-created advcheckbox element for removal.
      * @return void
      */
@@ -481,6 +509,7 @@ class conditions_form extends moodleform {
         int $index,
         array $data,
         array $playerhuddata,
+        object $showcelem,
         object $removeelem
     ): void {
         $mform   = $this->_form;
@@ -493,10 +522,10 @@ class conditions_form extends moodleform {
                 $fnamelevel = $prefix . '_' . $index . '_ph_level';
                 $levelelem  = $mform->createElement('text', $fnamelevel, '', ['size' => '5']);
                 $mform->addGroup(
-                    [$levelelem, $removeelem],
+                    [$levelelem, $showcelem, $removeelem],
                     'grp_' . $fnamelevel,
                     get_string('playerhudlevel', 'report_unlocker'),
-                    ['&nbsp;&nbsp;'],
+                    ['&nbsp;&nbsp;', '&nbsp;&nbsp;'],
                     false
                 );
                 $mform->setType($fnamelevel, PARAM_INT);
@@ -538,10 +567,10 @@ class conditions_form extends moodleform {
                 $opselect   = $mform->createElement('select', $fnameop, '', $itopts);
 
                 $mform->addGroup(
-                    [$itemselect, $qtylabel, $qtyelem, $opselect, $removeelem],
+                    [$itemselect, $qtylabel, $qtyelem, $opselect, $showcelem, $removeelem],
                     'grp_' . $fnameitemid,
                     get_string('playerhuditem', 'report_unlocker'),
-                    ['', '', '&nbsp;&nbsp;', '&nbsp;&nbsp;'],
+                    ['', '', '&nbsp;&nbsp;', '&nbsp;&nbsp;', '&nbsp;&nbsp;'],
                     false
                 );
                 $mform->setType($fnameitemid, PARAM_INT);
@@ -569,10 +598,10 @@ class conditions_form extends moodleform {
 
                 $classselect = $mform->createElement('select', $fnameclassid, '', $classopts);
                 $mform->addGroup(
-                    [$classselect, $removeelem],
+                    [$classselect, $showcelem, $removeelem],
                     'grp_' . $fnameclassid,
                     get_string('playerhudclass', 'report_unlocker'),
-                    ['&nbsp;&nbsp;'],
+                    ['&nbsp;&nbsp;', '&nbsp;&nbsp;'],
                     false
                 );
                 $mform->setType($fnameclassid, PARAM_INT);
@@ -587,10 +616,10 @@ class conditions_form extends moodleform {
                     get_string('playerhudgamification', 'report_unlocker')
                 );
                 $mform->addGroup(
-                    [$staticelem, $removeelem],
+                    [$staticelem, $showcelem, $removeelem],
                     'grp_phinfo_' . $prefix . '_' . $index,
                     get_string('conditiontype_playerhud', 'report_unlocker'),
-                    ['&nbsp;&nbsp;'],
+                    ['&nbsp;&nbsp;', '&nbsp;&nbsp;'],
                     false
                 );
                 break;
@@ -603,13 +632,68 @@ class conditions_form extends moodleform {
                     get_string('conditionreadonly', 'report_unlocker')
                 );
                 $mform->addGroup(
-                    [$staticelem, $removeelem],
+                    [$staticelem, $showcelem, $removeelem],
                     'grp_phinfo_' . $prefix . '_' . $index,
                     get_string('conditiontype_playerhud', 'report_unlocker'),
-                    ['&nbsp;&nbsp;'],
+                    ['&nbsp;&nbsp;', '&nbsp;&nbsp;'],
                     false
                 );
                 break;
         }
+    }
+
+    /**
+     * Renders the operator selector row for an entry (activity or section).
+     *
+     * Shows a single select with the four availability operator combinations
+     * corresponding to the JSON 'op' field: '&' (all), '|' (any), '!&' (not all),
+     * '!|' (not any). For ops that use a global show flag ('|' and '!&'), a
+     * visibility checkbox is also rendered; it is hidden for per-condition ops.
+     *
+     * @param string $prefix Element name prefix: 'mod_{cmid}' or 'sec_{sectionid}'.
+     * @param string $op Current operator value read from the availability JSON.
+     * @param bool $show Current global show value (used when op is '|' or '!&').
+     * @return void
+     */
+    private function render_op_row(string $prefix, string $op, bool $show): void {
+        $mform    = $this->_form;
+        $fname    = $prefix . '_op';
+        $showname = $prefix . '_show';
+        $validop  = in_array($op, ['&', '|', '!&', '!|'], true) ? $op : '&';
+
+        $opts = [
+            '&'  => get_string('entryop_and', 'report_unlocker'),
+            '|'  => get_string('entryop_or', 'report_unlocker'),
+            '!&' => get_string('entryop_nand', 'report_unlocker'),
+            '!|' => get_string('entryop_nor', 'report_unlocker'),
+        ];
+
+        $showelem   = $mform->createElement(
+            'advcheckbox',
+            $showname,
+            '',
+            get_string('showcondition', 'report_unlocker')
+        );
+        $selectelem = $mform->createElement('select', $fname, '', $opts);
+        $suffixelem = $mform->createElement(
+            'static',
+            'sfx_op_' . $prefix,
+            '',
+            '&nbsp;' . get_string('entryop_suffix', 'report_unlocker')
+        );
+
+        $mform->addGroup(
+            [$showelem, $selectelem, $suffixelem],
+            'grp_op_' . $prefix,
+            get_string('entryop_label', 'report_unlocker'),
+            ['&nbsp;&nbsp;', ''],
+            false
+        );
+        $mform->setType($fname, PARAM_RAW);
+        $mform->setDefault($fname, $validop);
+        $mform->setType($showname, PARAM_INT);
+        $mform->setDefault($showname, (int) $show);
+        $mform->hideIf($showname, $fname, 'eq', '&');
+        $mform->hideIf($showname, $fname, 'eq', '!|');
     }
 }

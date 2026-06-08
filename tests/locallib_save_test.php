@@ -311,4 +311,136 @@ final class locallib_save_test extends \advanced_testcase {
 
         $this->assertSame($original, $this->get_section_availability((int) $section2->id));
     }
+
+    // Op change tests.
+
+    public function test_save_module_conditions_updates_op(): void {
+        $this->resetAfterTest();
+        global $DB;
+
+        $course = $this->getDataGenerator()->create_course();
+        $mod    = $this->getDataGenerator()->create_module('assign', ['course' => $course->id]);
+        $DB->set_field(
+            'course_modules',
+            'availability',
+            $this->avail(['type' => 'group', 'id' => 1]),
+            ['id' => $mod->cmid]
+        );
+
+        report_unlocker_save_module_conditions($course->id, [[
+            'cmid'     => $mod->cmid,
+            'updates'  => [],
+            'removals' => [],
+            'op'       => '|',
+        ]]);
+
+        $decoded = json_decode($this->get_cm_availability($mod->cmid), true);
+        $this->assertSame('|', $decoded['op']);
+    }
+
+    public function test_save_section_conditions_updates_op(): void {
+        $this->resetAfterTest();
+        global $DB;
+
+        $course  = $this->getDataGenerator()->create_course(['numsections' => 1]);
+        $section = $DB->get_record('course_sections', ['course' => $course->id, 'section' => 1]);
+        $DB->set_field(
+            'course_sections',
+            'availability',
+            $this->avail(['type' => 'group', 'id' => 1]),
+            ['id' => $section->id]
+        );
+
+        report_unlocker_save_section_conditions($course->id, [[
+            'sectionid' => $section->id,
+            'updates'   => [],
+            'removals'  => [],
+            'op'        => '!&',
+        ]]);
+
+        $decoded = json_decode($this->get_section_availability((int) $section->id), true);
+        $this->assertSame('!&', $decoded['op']);
+    }
+
+    // Showcupdates tests: per-condition visibility, op and/not-any.
+
+    public function test_save_module_conditions_updates_showc(): void {
+        $this->resetAfterTest();
+        global $DB;
+
+        $course = $this->getDataGenerator()->create_course();
+        $mod    = $this->getDataGenerator()->create_module('assign', ['course' => $course->id]);
+        $json   = json_encode([
+            'op'    => '&',
+            'c'     => [['type' => 'group', 'id' => 1], ['type' => 'group', 'id' => 2]],
+            'showc' => [true, true],
+        ]);
+        $DB->set_field('course_modules', 'availability', $json, ['id' => $mod->cmid]);
+
+        report_unlocker_save_module_conditions($course->id, [[
+            'cmid'         => $mod->cmid,
+            'updates'      => [],
+            'removals'     => [],
+            'showcupdates' => [1 => false],
+        ]]);
+
+        $decoded = json_decode($this->get_cm_availability($mod->cmid), true);
+        $this->assertTrue($decoded['showc'][0]);
+        $this->assertFalse($decoded['showc'][1]);
+    }
+
+    // Show tests: global visibility flag, op or/not-all.
+
+    public function test_save_module_conditions_updates_global_show_and_removes_showc(): void {
+        $this->resetAfterTest();
+        global $DB;
+
+        $course = $this->getDataGenerator()->create_course();
+        $mod    = $this->getDataGenerator()->create_module('assign', ['course' => $course->id]);
+        $json   = json_encode([
+            'op'    => '|',
+            'c'     => [['type' => 'group', 'id' => 1]],
+            'showc' => [true],
+        ]);
+        $DB->set_field('course_modules', 'availability', $json, ['id' => $mod->cmid]);
+
+        report_unlocker_save_module_conditions($course->id, [[
+            'cmid'     => $mod->cmid,
+            'updates'  => [],
+            'removals' => [],
+            'op'       => '|',
+            'show'     => false,
+        ]]);
+
+        $decoded = json_decode($this->get_cm_availability($mod->cmid), true);
+        $this->assertFalse($decoded['show']);
+        $this->assertArrayNotHasKey('showc', $decoded);
+    }
+
+    public function test_save_module_op_transition_and_to_or_rewrites_show_mechanism(): void {
+        $this->resetAfterTest();
+        global $DB;
+
+        $course = $this->getDataGenerator()->create_course();
+        $mod    = $this->getDataGenerator()->create_module('assign', ['course' => $course->id]);
+        $json   = json_encode([
+            'op'    => '&',
+            'c'     => [['type' => 'group', 'id' => 1]],
+            'showc' => [false],
+        ]);
+        $DB->set_field('course_modules', 'availability', $json, ['id' => $mod->cmid]);
+
+        report_unlocker_save_module_conditions($course->id, [[
+            'cmid'     => $mod->cmid,
+            'updates'  => [],
+            'removals' => [],
+            'op'       => '|',
+            'show'     => true,
+        ]]);
+
+        $decoded = json_decode($this->get_cm_availability($mod->cmid), true);
+        $this->assertSame('|', $decoded['op']);
+        $this->assertTrue($decoded['show']);
+        $this->assertArrayNotHasKey('showc', $decoded);
+    }
 }
