@@ -199,10 +199,9 @@ const renderPreview = async(summary, preview) => {
     const body = modal.querySelector('#ru-ai-preview-body');
     const summaryEl = modal.querySelector('#ru-ai-summary');
 
-    const [strDelete, strUpdate, strSection] = await getStrings([
+    const [strDelete, strUpdate] = await getStrings([
         {key: 'ai_action_delete', component: 'report_unlocker'},
         {key: 'ai_action_update', component: 'report_unlocker'},
-        {key: 'section', component: 'report_unlocker'},
     ]);
 
     summaryEl.textContent = summary;
@@ -215,7 +214,7 @@ const renderPreview = async(summary, preview) => {
 
         tr.innerHTML = `
             <td>${escapeHtml(row.entry_name)}</td>
-            <td>${escapeHtml(strSection.replace('{$a}', row.section_num))}</td>
+            <td>${escapeHtml(row.section_name)}</td>
             <td>${escapeHtml(row.cond_type)}</td>
             <td>${escapeHtml(row.cond_summary)}</td>
             <td class="${actionClass} fw-bold">${escapeHtml(actionLabel)}</td>

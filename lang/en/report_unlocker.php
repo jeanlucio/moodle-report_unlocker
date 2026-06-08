@@ -33,6 +33,7 @@ $string['ai_col_action'] = 'Action';
 $string['ai_col_activity'] = 'Activity / Section';
 $string['ai_col_condition'] = 'Current condition';
 $string['ai_col_condtype'] = 'Type';
+$string['ai_col_section'] = 'Section';
 $string['ai_confirm'] = 'Apply changes';
 $string['ai_empty_message'] = 'Please enter a message before sending.';
 $string['ai_input_placeholder'] = 'Describe the changes you want to make to the restrictions...';

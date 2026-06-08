@@ -335,6 +335,13 @@ class assistant {
             $secindex[$sec['id']] = $sec;
         }
 
+        $modinfo = get_fast_modinfo($this->courseid);
+        $course  = $modinfo->get_course();
+        $sectionnames = [];
+        foreach ($modinfo->get_section_info_all() as $section) {
+            $sectionnames[(int) $section->section] = get_section_name($course, $section);
+        }
+
         $rows = [];
         foreach ($changes as $change) {
             $target = $change['target'];
@@ -357,13 +364,18 @@ class assistant {
                 continue;
             }
 
+            $sectionnum  = $entry['sectionnum'];
+            $sectionname = $sectionnames[$sectionnum]
+                ?? get_string('section', 'report_unlocker', $sectionnum);
+
             $rows[] = [
                 'target'          => $target,
                 'id'              => $id,
                 'condition_index' => $index,
                 'action'          => $change['action'],
                 'entry_name'      => $entry['name'],
-                'section_num'     => $entry['sectionnum'],
+                'section_num'     => $sectionnum,
+                'section_name'    => $sectionname,
                 'cond_type'       => $condentry['type'],
                 'cond_summary'    => $this->describe_condition($condentry),
                 'updates'         => $change['updates'] ?? [],

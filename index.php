@@ -489,7 +489,7 @@ if ($aiavailable) {
         'str_send'         => get_string('ai_send', 'report_unlocker'),
         'str_preview_title' => get_string('ai_preview_title', 'report_unlocker'),
         'str_activity'     => get_string('ai_col_activity', 'report_unlocker'),
-        'str_section'      => get_string('section', 'report_unlocker'),
+        'str_section'      => get_string('ai_col_section', 'report_unlocker'),
         'str_condtype'     => get_string('ai_col_condtype', 'report_unlocker'),
         'str_condition'    => get_string('ai_col_condition', 'report_unlocker'),
         'str_action'       => get_string('ai_col_action', 'report_unlocker'),
