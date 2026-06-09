@@ -42,6 +42,7 @@ Instead of manually editing each activity's restriction settings one by one, Unl
   * **Visibility toggle per condition** (operator *all* / *not any*): control whether a hidden condition is shown greyed-out or fully invisible to students
   * **Global visibility toggle** (operator *any* / *not all*): single flag applied to all conditions in the group
 * 🎨 **Readable Descriptions**: Each restriction displays a human-friendly summary (e.g., "Created after 2026-03-15 14:30")
+* 🤖 **AI Assistant:** Describe the desired changes in natural language; the assistant shows a preview and only applies them after confirmation. Requires `core_ai` configured in Moodle (4.5+) or the `local_playergames` plugin.
 * 💾 **Safe Modifications:** Session key verification protects against accidental bulk changes
 * 📱 **Responsive Design:** Works on desktop and tablet views
 
@@ -142,6 +143,7 @@ Unlocker simplifies common pedagogical scenarios:
 * **Session key verification:** All modifications (edit, delete) require a valid session key.
 * **Server-side validation:** Restriction changes are validated against the course context.
 * **Audit-friendly:** No bulk deletions without explicit user confirmation.
+* **Privacy compliant:** This plugin stores no personal user data. It implements Moodle's Privacy API (`null_provider`) and is fully GDPR-compliant.
 
 ---
 
@@ -192,6 +194,15 @@ If both **`availability_playerhud`** and **`block_playerhud`** are installed, Un
 
 Unlocker reads item and class names from `block_playerhud` tables to populate the edit selectors. The integration is automatic — no additional configuration needed.
 
+#### AI Assistant
+
+The AI assistant is available when either of the following is configured:
+
+* **`core_ai`** (Moodle 4.5+) — configure an AI provider in *Site administration → AI → AI providers*.
+* **`local_playergames`** — installs an alternative AI provider.
+
+Once a provider is active, the AI chat button appears in the report. Describe the restrictions you want to change in plain language; the assistant generates a preview of all modifications and applies them only after your confirmation.
+
 ---
 
 ### 📄 Language & Internationalization
@@ -205,12 +216,6 @@ All restriction descriptions are translated and displayed in the user's language
 
 ---
 
-
-### 🐛 Known Limitations
-
-* 🔗 **Nested restriction groups** — Displayed as **"Nested restriction group (N)"**, where `N` is the number of child conditions inside the group. They cannot be removed directly by this report; a direct link to the activity settings page is shown instead. Click to edit the group in a new tab using Moodle's native editor.
-
----
 
 ### ⚖️ Compatibility
 
@@ -372,6 +377,7 @@ Unlocker simplifica cenários pedagógicos comuns:
 * **Verificação de chave de sessão:** Todas as modificações (editar, excluir) exigem uma chave de sessão válida.
 * **Validação no servidor:** As mudanças de restrição são validadas com base no contexto do curso.
 * **Auditoria amigável:** Sem exclusões em massa sem confirmação explícita do usuário.
+* **Conformidade com privacidade:** Este plugin não armazena dados pessoais de usuários. Implementa a Privacy API do Moodle (`null_provider`) e está em total conformidade com a LGPD/GDPR.
 
 ---
 
@@ -421,6 +427,15 @@ Se **`availability_playerhud`** e **`block_playerhud`** estiverem instalados, Un
 * `block_playerhud` armazena os dados de itens e classes referenciados pela condição.
 
 O Unlocker lê os nomes de itens e classes das tabelas do `block_playerhud` para preencher os seletores de edição. A integração é automática — nenhuma configuração adicional necessária.
+
+#### Assistente IA
+
+O assistente IA é ativado quando uma das seguintes opções estiver configurada:
+
+* **`core_ai`** (Moodle 4.5+) — configure um provedor de IA em *Administração do site → IA → Provedores de IA*.
+* **`local_playergames`** — instala um provedor de IA alternativo.
+
+Com um provedor ativo, o botão do chat IA aparece no relatório. Descreva em linguagem natural as mudanças desejadas; o assistente exibe uma prévia de todas as modificações e só as aplica após sua confirmação.
 
 ---
 
