@@ -11,7 +11,7 @@
 
 ## English
 
-The **Unlocker Report** is a powerful management tool for Moodle course administrators and teachers. It provides a comprehensive overview of all **access restrictions** (availability conditions) applied to course activities and resources, allowing you to view, analyze, and modify restrictions at scale.
+The **Unlocker Report** is a Moodle course report for administrators and teachers. It displays the **access restrictions** (availability conditions) applied to course activities and resources. All restriction types are listed — including those from third-party availability plugins — but only the native core types (date, group, grouping, grade, completion, and profile) and PlayerHUD conditions support inline editing. Unknown types are shown as read-only and can still be removed.
 
 Instead of manually editing each activity's restriction settings one by one, Unlocker centralizes all restrictions in a single, searchable, filterable dashboard — reducing configuration time and improving visibility.
 
@@ -25,7 +25,7 @@ Instead of manually editing each activity's restriction settings one by one, Unl
   * Filter by restriction type (date, group, grade, completion, profile, PlayerHUD, etc.)
   * Search by activity name
   * Combine multiple filters at once
-* 🎯 **Supported Restriction Types:**
+* 🎯 **Supported Restriction Types (inline editing):**
   * 📅 **Date-based** — Activities unlock/lock on specific dates and times
   * 👥 **Group-based** — Restrict by Moodle group membership
   * 👤 **Grouping-based** — Restrict by grouping
@@ -240,7 +240,7 @@ See [CHANGES.md](CHANGES.md) for release notes and version history.
 
 ## Português
 
-O **Relatório Unlocker** é uma ferramenta poderosa para administradores de cursos e professores do Moodle. Oferece uma visão completa de todas as **restrições de acesso** (condições de disponibilidade) aplicadas às atividades e recursos do curso, permitindo visualizar, analisar e modificar restrições em escala.
+O **Relatório Unlocker** é um relatório de curso do Moodle para administradores e professores. Exibe as **restrições de acesso** (condições de disponibilidade) aplicadas às atividades e recursos do curso. Todos os tipos de restrição são listados — inclusive os de plugins de disponibilidade de terceiros — mas apenas os tipos nativos do core (data, grupo, agrupamento, nota, conclusão e perfil) e as condições do PlayerHUD permitem edição inline. Tipos desconhecidos são exibidos como somente leitura e ainda podem ser removidos.
 
 Em vez de editar manualmente as configurações de restrição de cada atividade uma por uma, Unlocker centraliza todas as restrições em um único painel de controle pesquisável e filtrável — reduzindo tempo de configuração e melhorando a visibilidade.
 
@@ -254,7 +254,7 @@ Em vez de editar manualmente as configurações de restrição de cada atividade
   * Filtrar por tipo de restrição (data, grupo, nota, conclusão, perfil, PlayerHUD, etc.)
   * Buscar por nome da atividade
   * Combinar múltiplos filtros simultaneamente
-* 🎯 **Tipos de Restrição Suportados:**
+* 🎯 **Tipos de Restrição Suportados (edição inline):**
   * 📅 **Baseada em data** — Atividades se desbloqueiam/bloqueiam em datas e horas específicas
   * 👥 **Baseada em grupo** — Restringe por grupo do Moodle
   * 👤 **Baseada em agrupamento** — Restringe por agrupamento
