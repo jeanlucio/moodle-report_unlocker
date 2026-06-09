@@ -4,6 +4,13 @@ All notable changes to this plugin are documented here.
 
 ---
 
+## [v1.0.1] — 2026-06-09
+
+- Add missing `COPYING.txt` (GPL v3 full license text) required by the Moodle Plugin Directory.
+- Add `moodle-release.yml` GitHub Actions workflow for automated publishing to the Plugin Directory.
+
+---
+
 ## [v1.0.0] — 2026-06-08
 
 Initial public release.
