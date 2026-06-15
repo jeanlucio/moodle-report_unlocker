@@ -4,6 +4,18 @@ All notable changes to this plugin are documented here.
 
 ---
 
+## [v1.0.2] — 2026-06-15
+
+### Changed
+- AI resolution now follows the shared PlayerGames ecosystem ladder: when
+  `local_playergames` is installed, every call is delegated to its hub (which
+  resolves personal → site → `core_ai` internally); the direct `core_ai` path is
+  used only when the hub is absent. Previously `core_ai` was tried first, which
+  could override a key the user configured in the hub. Behaviour without the hub
+  is unchanged.
+
+---
+
 ## [v1.0.1] — 2026-06-09
 
 - Add missing `COPYING.txt` (GPL v3 full license text) required by the Moodle Plugin Directory.

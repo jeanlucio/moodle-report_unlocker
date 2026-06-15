@@ -25,11 +25,13 @@
 namespace report_unlocker\ai;
 
 /**
- * Detects and delegates AI calls following a fixed priority order:
- *   1. Moodle core_ai subsystem (direct, no external dependency)
- *   2. local_playergames ai_generator (if installed and keyed)
+ * Detects and delegates AI calls following the shared ecosystem ladder:
+ *   1. local_playergames hub (if installed) — resolves personal → site → core_ai
+ *   2. Moodle core_ai subsystem (direct, when the hub is not installed)
  *
- * The AI button in the UI is hidden when has_ai() returns false.
+ * The hub owns the canonical key precedence, so when it is installed every call is
+ * delegated to it (it falls back to core_ai internally). The AI button in the UI is
+ * hidden when has_ai() returns false.
  *
  * @package    report_unlocker
  * @copyright  2026 Jean Lúcio
@@ -42,13 +44,10 @@ class service {
      * @return bool
      */
     public static function has_ai(): bool {
-        if (self::has_core_ai()) {
-            return true;
-        }
         if (class_exists(\local_playergames\cartridge\ai_generator::class)) {
             return (new \local_playergames\cartridge\ai_generator())->has_key();
         }
-        return false;
+        return self::has_core_ai();
     }
 
     /**
@@ -58,11 +57,11 @@ class service {
      * @return array Result with keys: success (bool), data (string), message (string), provider (string).
      */
     public static function send(string $prompt): array {
-        if (self::has_core_ai()) {
-            return self::call_core_ai($prompt);
-        }
         if (class_exists(\local_playergames\cartridge\ai_generator::class)) {
             return (new \local_playergames\cartridge\ai_generator())->send($prompt);
+        }
+        if (self::has_core_ai()) {
+            return self::call_core_ai($prompt);
         }
         return ['success' => false, 'message' => '', 'data' => '', 'provider' => ''];
     }
