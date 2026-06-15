@@ -4,22 +4,20 @@ All notable changes to this plugin are documented here.
 
 ---
 
-## [v1.0.3] — 2026-06-15
-
-### Changed
-- The Moodle `core_ai` manager is now retrieved through the dependency container
-  (`\core\di::get(\core_ai\manager::class)`), the documented retrieval pattern,
-  instead of a reflection-based constructor shim. Behaviour is unchanged.
-
----
-
 ## [v1.0.2] — 2026-06-15
+
+### Added
+- Add `github-release.yml` GitHub Actions workflow for automated GitHub Release
+  creation from tags.
 
 ### Changed
 - AI provider resolution order corrected: when an optional third-party hub is
   present, it now takes priority over the direct `core_ai` path. Previously
   `core_ai` was tried first, which could override a key already configured in
   the hub. Behaviour without the hub is unchanged.
+- The Moodle `core_ai` manager is now retrieved through the dependency container
+  (`\core\di::get(\core_ai\manager::class)`), the documented retrieval pattern,
+  instead of a reflection-based constructor shim. Behaviour is unchanged.
 
 ---
 
