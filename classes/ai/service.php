@@ -70,13 +70,12 @@ class service {
      * Returns true when the Moodle core_ai subsystem has at least one provider
      * configured and enabled for text generation.
      *
-     * Compatible with Moodle 4.5 (static API) and 5.x (instance API with DB injection).
+     * Compatible with Moodle 4.5+ — the manager is retrieved via the dependency
+     * container, which injects the dependencies for the running version.
      *
      * @return bool
      */
     private static function has_core_ai(): bool {
-        global $DB;
-
         if (
             !class_exists(\core_ai\manager::class)
             || !class_exists(\core_ai\aiactions\generate_text::class)
@@ -86,12 +85,8 @@ class service {
 
         try {
             $actionclass = \core_ai\aiactions\generate_text::class;
-            $reflection = new \ReflectionMethod(\core_ai\manager::class, 'get_providers_for_actions');
-            if ($reflection->isStatic()) {
-                $providers = \core_ai\manager::get_providers_for_actions([$actionclass], true);
-            } else {
-                $providers = (new \core_ai\manager($DB))->get_providers_for_actions([$actionclass], true);
-            }
+            $manager = \core\di::get(\core_ai\manager::class);
+            $providers = $manager->get_providers_for_actions([$actionclass], true);
             return !empty($providers[$actionclass]);
         } catch (\Throwable $e) {
             return false;
@@ -105,12 +100,10 @@ class service {
      * @return array Result with keys: success, data, message, provider.
      */
     private static function call_core_ai(string $prompt): array {
-        global $DB, $USER;
+        global $USER;
 
         try {
-            $actionclass = \core_ai\aiactions\generate_text::class;
-            $reflection = new \ReflectionMethod(\core_ai\manager::class, 'get_providers_for_actions');
-            $manager = $reflection->isStatic() ? new \core_ai\manager() : new \core_ai\manager($DB);
+            $manager = \core\di::get(\core_ai\manager::class);
 
             $action = new \core_ai\aiactions\generate_text(
                 contextid: \context_system::instance()->id,

@@ -4,15 +4,22 @@ All notable changes to this plugin are documented here.
 
 ---
 
+## [v1.0.3] — 2026-06-15
+
+### Changed
+- The Moodle `core_ai` manager is now retrieved through the dependency container
+  (`\core\di::get(\core_ai\manager::class)`), the documented retrieval pattern,
+  instead of a reflection-based constructor shim. Behaviour is unchanged.
+
+---
+
 ## [v1.0.2] — 2026-06-15
 
 ### Changed
-- AI resolution now follows the shared PlayerGames ecosystem ladder: when
-  `local_playergames` is installed, every call is delegated to its hub (which
-  resolves personal → site → `core_ai` internally); the direct `core_ai` path is
-  used only when the hub is absent. Previously `core_ai` was tried first, which
-  could override a key the user configured in the hub. Behaviour without the hub
-  is unchanged.
+- AI provider resolution order corrected: when an optional third-party hub is
+  present, it now takes priority over the direct `core_ai` path. Previously
+  `core_ai` was tried first, which could override a key already configured in
+  the hub. Behaviour without the hub is unchanged.
 
 ---
 
@@ -43,7 +50,7 @@ Initial public release.
 - **Operator selector** per activity/section (`&` / `|` / `!&` / `!|`) — control whether the student must match all, any, not all, or not any of the listed conditions.
 - **Per-condition visibility toggle** (`showc`) — controls whether a hidden condition is shown greyed-out or fully invisible to students (used with `&` and `!|` operators).
 - **Global visibility toggle** (`show`) — single flag applied to the whole restriction group (used with `|` and `!&` operators).
-- **AI Restriction Assistant** — describe changes in natural language; the assistant proposes a preview of affected conditions, and changes are applied only after explicit confirmation. Integrates with the Moodle `core_ai` subsystem (Moodle 4.5+) and falls back to `local_playergames` AI provider when available. The AI button is hidden when no provider is configured.
+- **AI Restriction Assistant** — describe changes in natural language; the assistant proposes a preview of affected conditions, and changes are applied only after explicit confirmation. Integrates with the Moodle `core_ai` subsystem (Moodle 4.5+); also compatible with optional third-party AI hubs that follow the ecosystem delegation pattern. The AI button is hidden when no provider is configured.
 - **Remove all visible** — marks all restrictions matching the current filters for removal and saves after a confirmation dialog.
 - **Advanced filter bar** — filter by section, by restriction type, and by activity name (with debounced live search); filters can be combined. A "Clear filters" button resets all at once.
 - **Navigation integration** — a link to the report is injected automatically into the course navigation menu (visible only to users with `report/unlocker:view`).
