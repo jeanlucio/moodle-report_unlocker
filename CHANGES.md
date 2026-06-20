@@ -4,6 +4,16 @@ All notable changes to this plugin are documented here.
 
 ---
 
+## [v1.0.3] — 2026-06-20
+
+### Changed
+- The internal `locallib.php` library was replaced by autoloaded classes under
+  `classes/local/`: `conditions` (reads availability conditions and the report's
+  filter option data) and `condition_writer` (applies and saves condition
+  changes). Behaviour is unchanged; this removes the legacy global-function
+  library in favour of namespaced classes. Unit tests were reorganised to mirror
+  the new classes under `tests/local/`.
+
 ## [v1.0.2] — 2026-06-15
 
 ### Added

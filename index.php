@@ -24,9 +24,10 @@
 
 require(__DIR__ . '/../../config.php');
 require_once($CFG->libdir . '/formslib.php');
-require_once(__DIR__ . '/locallib.php');
 
 use report_unlocker\ai\service as ai_service;
+use report_unlocker\local\condition_writer;
+use report_unlocker\local\conditions;
 
 $id = required_param('id', PARAM_INT);
 
@@ -48,14 +49,14 @@ if ($aiavailable) {
     $PAGE->requires->js_call_amd('report_unlocker/ai_chat', 'init', [$id]);
 }
 
-$moduleentries  = report_unlocker_get_module_conditions($id);
-$sectionentries = report_unlocker_get_section_conditions($id);
-$groups         = report_unlocker_get_groups($id);
-$groupings      = report_unlocker_get_groupings($id);
-$gradeitems     = report_unlocker_get_grade_items($id);
-$completioncms  = report_unlocker_get_cms_with_completion($id);
-$profilefields  = report_unlocker_get_profile_fields();
-$playerhuddata  = report_unlocker_get_playerhud_data($id);
+$moduleentries  = conditions::get_module_conditions($id);
+$sectionentries = conditions::get_section_conditions($id);
+$groups         = conditions::get_groups($id);
+$groupings      = conditions::get_groupings($id);
+$gradeitems     = conditions::get_grade_items($id);
+$completioncms  = conditions::get_cms_with_completion($id);
+$profilefields  = conditions::get_profile_fields();
+$playerhuddata  = conditions::get_playerhud_data($id);
 
 $mform = new \report_unlocker\form\conditions_form(null, [
     'courseid'      => $id,
@@ -416,8 +417,8 @@ if ($fromform = $mform->get_data()) {
         }
     }
 
-    report_unlocker_save_module_conditions($id, $moduleupdates);
-    report_unlocker_save_section_conditions($id, $sectionupdates);
+    condition_writer::save_module($id, $moduleupdates);
+    condition_writer::save_section($id, $sectionupdates);
 
     redirect(
         $PAGE->url,
@@ -446,7 +447,7 @@ foreach ($presenttypes as $type => $label) {
 }
 
 $filterdata = [
-    'sections'                      => report_unlocker_get_filter_sections($id),
+    'sections'                      => conditions::get_filter_sections($id),
     'conditiontypes'                => $conditiontypes,
     'str_allsections'               => get_string('allsections', 'report_unlocker'),
     'str_alltypes'                  => get_string('alltypes', 'report_unlocker'),

@@ -28,6 +28,7 @@ use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_single_structure;
 use core_external\external_value;
+use report_unlocker\local\condition_writer;
 
 /**
  * Applies a set of AI-proposed condition changes to course modules and sections.
@@ -57,8 +58,6 @@ class ai_apply extends external_api {
      * @return array
      */
     public static function execute(int $courseid, string $changesjson): array {
-        global $CFG;
-
         [
             'courseid'    => $courseid,
             'changesjson' => $changesjson,
@@ -70,8 +69,6 @@ class ai_apply extends external_api {
         $context = \context_course::instance($courseid);
         self::validate_context($context);
         require_capability('report/unlocker:editconditions', $context);
-
-        require_once($CFG->dirroot . '/report/unlocker/locallib.php');
 
         $changes = json_decode($changesjson, true);
         if (!is_array($changes)) {
@@ -144,8 +141,8 @@ class ai_apply extends external_api {
             }
         }
 
-        report_unlocker_save_module_conditions($courseid, $moduleupdates);
-        report_unlocker_save_section_conditions($courseid, $sectionupdates);
+        condition_writer::save_module($courseid, $moduleupdates);
+        condition_writer::save_section($courseid, $sectionupdates);
 
         return ['applied' => true];
     }

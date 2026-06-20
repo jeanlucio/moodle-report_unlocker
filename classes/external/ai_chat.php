@@ -58,7 +58,6 @@ class ai_chat extends external_api {
      * @return array
      */
     public static function execute(int $courseid, string $message): array {
-        global $CFG;
 
         [
             'courseid' => $courseid,
@@ -71,8 +70,6 @@ class ai_chat extends external_api {
         $context = \context_course::instance($courseid);
         self::validate_context($context);
         require_capability('report/unlocker:editconditions', $context);
-
-        require_once($CFG->dirroot . '/report/unlocker/locallib.php');
 
         $message = trim($message);
         if ($message === '') {
