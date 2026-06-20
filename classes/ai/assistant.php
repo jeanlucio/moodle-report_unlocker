@@ -24,6 +24,8 @@
 
 namespace report_unlocker\ai;
 
+use report_unlocker\local\conditions;
+
 /**
  * Processes a natural-language teacher request, calls the AI provider,
  * and returns a structured preview of proposed condition changes.
@@ -36,10 +38,10 @@ class assistant {
     /** @var int The course ID. */
     private int $courseid;
 
-    /** @var array Module entries from report_unlocker_get_module_conditions(). */
+    /** @var array Module entries from conditions::get_module_conditions(). */
     private array $modules;
 
-    /** @var array Section entries from report_unlocker_get_section_conditions(). */
+    /** @var array Section entries from conditions::get_section_conditions(). */
     private array $sections;
 
     /**
@@ -49,8 +51,8 @@ class assistant {
      */
     public function __construct(int $courseid) {
         $this->courseid = $courseid;
-        $this->modules  = report_unlocker_get_module_conditions($courseid);
-        $this->sections = report_unlocker_get_section_conditions($courseid);
+        $this->modules  = conditions::get_module_conditions($courseid);
+        $this->sections = conditions::get_section_conditions($courseid);
     }
 
     /**
@@ -150,7 +152,7 @@ class assistant {
     /**
      * Returns a compact array representation of a single condition for the AI context.
      *
-     * @param array $cond Condition entry from report_unlocker_parse_all_conditions().
+     * @param array $cond Condition entry from conditions::parse_all().
      * @return array
      */
     private function compact_condition(array $cond): array {
