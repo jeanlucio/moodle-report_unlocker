@@ -4,6 +4,22 @@ All notable changes to this plugin are documented here.
 
 ---
 
+## [v1.0.4] — 2026-06-29
+
+### Changed
+- The AI restriction assistant now sources its API keys from the AI Hub
+  (`local_aihub`) plugin, trying the user's personal key first and then the
+  site key. A site with a `core_ai` provider keeps working without the hub
+  installed, as before.
+
+### Fixed
+- AI-proposed date changes now resolve to the correct date. The assistant is
+  told the current date and timezone, the model returns a plain local date,
+  and the timestamp is computed on the server in the user's timezone, so the
+  year is no longer guessed and the time is no longer off.
+- The confirmation dialog now shows the proposed new value of each change in a
+  dedicated column, so the result can be reviewed before it is applied.
+
 ## [v1.0.3] — 2026-06-20
 
 ### Changed
