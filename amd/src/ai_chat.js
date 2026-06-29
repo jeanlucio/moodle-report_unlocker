@@ -180,6 +180,7 @@ const renderPreview = async(summary, preview) => {
             <td>${escapeHtml(row.section_name)}</td>
             <td>${escapeHtml(row.cond_type)}</td>
             <td>${escapeHtml(row.cond_summary)}</td>
+            <td class="fw-bold">${escapeHtml(row.new_summary)}</td>
             <td class="${actionClass} fw-bold">${escapeHtml(actionLabel)}</td>
         `;
         body.appendChild(tr);

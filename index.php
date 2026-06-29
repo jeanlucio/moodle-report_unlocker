@@ -477,6 +477,7 @@ if ($aiavailable) {
         'str_section'      => get_string('ai_col_section', 'report_unlocker'),
         'str_condtype'     => get_string('ai_col_condtype', 'report_unlocker'),
         'str_condition'    => get_string('ai_col_condition', 'report_unlocker'),
+        'str_newvalue'     => get_string('ai_col_newvalue', 'report_unlocker'),
         'str_action'       => get_string('ai_col_action', 'report_unlocker'),
         'str_confirm'      => get_string('ai_confirm', 'report_unlocker'),
         'str_cancel'       => get_string('cancel', 'core'),

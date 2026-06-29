@@ -75,7 +75,9 @@ class assistant {
         }
 
         $prompt = $this->build_prompt($message, $context);
-        $result = service::send($prompt);
+        $coursename = get_course($this->courseid)->shortname;
+        $description = get_string('ai_usage', 'report_unlocker', $coursename);
+        $result = service::send($prompt, $description);
 
         if (!$result['success']) {
             return [
@@ -235,15 +237,27 @@ class assistant {
             'summary' => 'Short human-readable summary of what will change (in the same language as the teacher request)',
             'changes' => [
                 ['target' => 'module or section', 'id' => 'integer id', 'condition_index' => 'integer', 'action' => 'delete'],
-                ['target' => 'module', 'id' => 45, 'condition_index' => 1, 'action' => 'update', 'updates' => ['t' => 1767225600]],
+                [
+                    'target' => 'module',
+                    'id' => 45,
+                    'condition_index' => 1,
+                    'action' => 'update',
+                    'updates' => ['datetime' => '2026-06-30 15:40'],
+                ],
             ],
         ], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+
+        $now = new \DateTime('now', \core_date::get_user_timezone_object());
+        $nowline = 'Current date and time: ' . $now->format('Y-m-d H:i')
+            . ' (timezone ' . \core_date::get_user_timezone() . ').'
+            . ' Resolve every date the teacher mentions relative to this moment, in this timezone.';
 
         $rules = implode("\n", [
             '- Only propose changes to conditions that exist in the context.',
             '- Use "delete" to remove a condition entirely.',
             '- Use "update" with an "updates" object to change specific fields of a condition.',
-            '- For date conditions: field "t" is a Unix timestamp (seconds since epoch), field "d" is "from" or "until".',
+            '- For date conditions, set "datetime" to the new local date and time as "YYYY-MM-DD HH:MM"'
+                . ' (24-hour). Never output a Unix timestamp. Field "d" is "from" or "until".',
             '- For grade conditions: fields are "id" (grade item id), "min" (float or null), "max" (float or null).',
             '- For group conditions: field "id" is the group id.',
             '- For grouping conditions: field "id" is the grouping id.',
@@ -257,6 +271,7 @@ class assistant {
             'You are a Moodle course assistant helping a teacher manage activity access restrictions.',
             'Below is the full list of current restrictions in the course (JSON):',
             $contextjson,
+            $nowline,
             'Teacher request: "' . $message . '"',
             'Reply ONLY with a valid JSON object in this exact format:',
             $outputformat,
@@ -311,12 +326,49 @@ class assistant {
                 'action'          => $action,
             ];
             if ($action === 'update') {
-                $change['updates'] = (array) $raw['updates'];
+                $updates = (array) $raw['updates'];
+                // Convert the AI's human date into a Unix timestamp server-side, so the
+                // model never has to compute an epoch. An unparseable date drops the change.
+                if (isset($updates['datetime'])) {
+                    $timestamp = $this->datetime_to_timestamp((string) $updates['datetime']);
+                    unset($updates['datetime']);
+                    if ($timestamp === null) {
+                        continue;
+                    }
+                    $updates['t'] = $timestamp;
+                }
+                $change['updates'] = $updates;
             }
             $changes[] = $change;
         }
 
         return [$summary, $changes];
+    }
+
+    /**
+     * Converts an "YYYY-MM-DD HH:MM" local date string into a Unix timestamp.
+     *
+     * The value is interpreted in the current user's timezone. Date-only values
+     * ("YYYY-MM-DD") are accepted and treated as midnight. Anything that does not
+     * match exactly returns null so a malformed AI date is never persisted.
+     *
+     * @param string $value The local date string produced by the AI.
+     * @return int|null The Unix timestamp, or null when the value is invalid.
+     */
+    private function datetime_to_timestamp(string $value): ?int {
+        $value = trim($value);
+        if ($value === '') {
+            return null;
+        }
+
+        $timezone = \core_date::get_user_timezone_object();
+        foreach (['Y-m-d H:i', 'Y-m-d H:i:s', 'Y-m-d'] as $format) {
+            $datetime = \DateTime::createFromFormat('!' . $format, $value, $timezone);
+            if ($datetime !== false && $datetime->format($format) === $value) {
+                return $datetime->getTimestamp();
+            }
+        }
+        return null;
     }
 
     /**
@@ -380,6 +432,9 @@ class assistant {
                 'section_name'    => $sectionname,
                 'cond_type'       => $condentry['type'],
                 'cond_summary'    => $this->describe_condition($condentry),
+                'new_summary'     => $change['action'] === 'update'
+                    ? $this->describe_updates($condentry, $change['updates'] ?? [])
+                    : '',
                 'updates'         => $change['updates'] ?? [],
             ];
         }
@@ -437,5 +492,36 @@ class assistant {
             default:
                 return $cond['type'];
         }
+    }
+
+    /**
+     * Returns a short human-readable description of the proposed new value for an update.
+     *
+     * Date conditions render the resulting date/time; other fields are listed as
+     * "field=value" pairs so the teacher can verify the change before applying.
+     *
+     * @param array $cond The current condition entry.
+     * @param array $updates The proposed updates (already normalised, dates as "t").
+     * @return string
+     */
+    private function describe_updates(array $cond, array $updates): string {
+        if (empty($updates)) {
+            return '';
+        }
+
+        if ($cond['type'] === 'date' && isset($updates['t'])) {
+            return userdate((int) $updates['t'], get_string('strftimedatetimeshort', 'langconfig'));
+        }
+
+        $bits = [];
+        foreach ($updates as $field => $value) {
+            if (is_bool($value)) {
+                $value = $value ? '1' : '0';
+            } else if (is_null($value)) {
+                $value = '∅';
+            }
+            $bits[] = $field . '=' . $value;
+        }
+        return implode(', ', $bits);
     }
 }

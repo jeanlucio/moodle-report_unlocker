@@ -42,7 +42,7 @@ Instead of manually editing each activity's restriction settings one by one, Unl
   * **Visibility toggle per condition** (operator *all* / *not any*): control whether a hidden condition is shown greyed-out or fully invisible to students
   * **Global visibility toggle** (operator *any* / *not all*): single flag applied to all conditions in the group
 * 🎨 **Readable Descriptions**: Each restriction displays a human-friendly summary (e.g., "Created after 2026-03-15 14:30")
-* 🤖 **AI Assistant:** Describe the desired changes in natural language; the assistant shows a preview and only applies them after confirmation. Requires `core_ai` configured in Moodle (4.5+) or the `local_playergames` plugin.
+* 🤖 **AI Assistant:** Describe the desired changes in natural language; the assistant shows a preview and only applies them after confirmation. Requires `core_ai` configured in Moodle (4.5+) or the `local_aihub` plugin.
 * 💾 **Safe Modifications:** Session key verification protects against accidental bulk changes
 * 📱 **Responsive Design:** Works on desktop and tablet views
 
@@ -199,7 +199,7 @@ Unlocker reads item and class names from `block_playerhud` tables to populate th
 The AI assistant is available when either of the following is configured:
 
 * **`core_ai`** (Moodle 4.5+) — configure an AI provider in *Site administration → AI → AI providers*.
-* **`local_playergames`** — installs an alternative AI provider.
+* **`local_aihub`** — provides BYOK AI API keys (personal and site).
 
 Once a provider is active, the AI chat button appears in the report. Describe the restrictions you want to change in plain language; the assistant generates a preview of all modifications and applies them only after your confirmation.
 
@@ -275,7 +275,7 @@ Em vez de editar manualmente as configurações de restrição de cada atividade
   * **Seletor de operador** por atividade/seção: escolha se o estudante deve corresponder a *todas*, *qualquer*, *não todas* ou *nenhuma* das condições listadas
   * **Controle de visibilidade por condição** (operadores *todas* / *nenhuma*): define se uma condição oculta aparece esmaecida ou invisível para o estudante
   * **Controle de visibilidade global** (operadores *qualquer* / *não todas*): único flag aplicado a todo o grupo de condições
-* 🤖 **Assistente IA:** descreva em linguagem natural as mudanças desejadas; o assistente exibe uma prévia e só aplica após confirmação. Requer `core_ai` configurado no Moodle (4.5+) ou o plugin `local_playergames`.
+* 🤖 **Assistente IA:** descreva em linguagem natural as mudanças desejadas; o assistente exibe uma prévia e só aplica após confirmação. Requer `core_ai` configurado no Moodle (4.5+) ou o plugin `local_aihub`.
 * 🎨 **Descrições Legíveis:** Cada restrição exibe um resumo amigável (ex: "Disponível após 2026-03-15 14:30")
 * 💾 **Modificações Seguras:** Verificação de chave de sessão protege contra mudanças acidentais em massa
 * 📱 **Design Responsivo:** Funciona em visualizações de desktop e tablet
@@ -433,7 +433,7 @@ O Unlocker lê os nomes de itens e classes das tabelas do `block_playerhud` para
 O assistente IA é ativado quando uma das seguintes opções estiver configurada:
 
 * **`core_ai`** (Moodle 4.5+) — configure um provedor de IA em *Administração do site → IA → Provedores de IA*.
-* **`local_playergames`** — instala um provedor de IA alternativo.
+* **`local_aihub`** — fornece chaves de API de IA (BYOK, pessoal e do site).
 
 Com um provedor ativo, o botão do chat IA aparece no relatório. Descreva em linguagem natural as mudanças desejadas; o assistente exibe uma prévia de todas as modificações e só as aplica após sua confirmação.
 

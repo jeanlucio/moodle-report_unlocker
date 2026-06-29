@@ -26,12 +26,12 @@ namespace report_unlocker\ai;
 
 /**
  * Detects and delegates AI calls following the shared ecosystem ladder:
- *   1. local_playergames hub (if installed) — resolves personal → site → core_ai
- *   2. Moodle core_ai subsystem (direct, when the hub is not installed)
+ *   1. local_aihub (if installed) — resolves personal → site BYOK keys
+ *   2. Moodle core_ai subsystem (direct, when the hub has no key or is not installed)
  *
- * The hub owns the canonical key precedence, so when it is installed every call is
- * delegated to it (it falls back to core_ai internally). The AI button in the UI is
- * hidden when has_ai() returns false.
+ * The hub owns the BYOK key precedence; core_ai is this plugin's own institutional
+ * fallback, so a site with core_ai configured works without the hub installed. The
+ * AI button in the UI is hidden when has_ai() returns false.
  *
  * @package    report_unlocker
  * @copyright  2026 Jean Lúcio
@@ -44,8 +44,8 @@ class service {
      * @return bool
      */
     public static function has_ai(): bool {
-        if (class_exists(\local_playergames\cartridge\ai_generator::class)) {
-            return (new \local_playergames\cartridge\ai_generator())->has_key();
+        if (class_exists(\local_aihub\ai::class) && \local_aihub\ai::is_available()) {
+            return true;
         }
         return self::has_core_ai();
     }
@@ -53,17 +53,36 @@ class service {
     /**
      * Sends a raw prompt through the available provider chain and returns the result.
      *
+     * Routes to the AI Hub (local_aihub) first, which resolves personal then site
+     * BYOK keys. Falls back to the Moodle core_ai subsystem when the hub returns no
+     * result or is not installed.
+     *
      * @param string $prompt The full prompt text.
+     * @param string $description Short label of what is being generated, for the hub usage log.
      * @return array Result with keys: success (bool), data (string), message (string), provider (string).
      */
-    public static function send(string $prompt): array {
-        if (class_exists(\local_playergames\cartridge\ai_generator::class)) {
-            return (new \local_playergames\cartridge\ai_generator())->send($prompt);
+    public static function send(string $prompt, string $description = ''): array {
+        $lasterror = ['success' => false, 'message' => '', 'data' => '', 'provider' => ''];
+
+        if (class_exists(\local_aihub\ai::class)) {
+            $result = \local_aihub\ai::generate_text('', $prompt, true, 'report_unlocker', $description);
+            if (!empty($result['success'])) {
+                return $result;
+            }
+            // Preserve a real failure (e.g. an invalid key) so it is not masked as "no source".
+            if (!empty($result['message'])) {
+                $lasterror = $result;
+            }
         }
+
         if (self::has_core_ai()) {
-            return self::call_core_ai($prompt);
+            $result = self::call_core_ai($prompt);
+            if ($result['success'] || !empty($result['message'])) {
+                return $result;
+            }
         }
-        return ['success' => false, 'message' => '', 'data' => '', 'provider' => ''];
+
+        return $lasterror;
     }
 
     /**

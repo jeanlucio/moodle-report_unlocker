@@ -89,6 +89,7 @@ class ai_chat extends external_api {
                 'section_name' => $row['section_name'],
                 'cond_type'    => $row['cond_type'],
                 'cond_summary' => $row['cond_summary'],
+                'new_summary'  => $row['new_summary'],
                 'action'       => $row['action'],
             ];
         }, $result['preview']);
@@ -114,6 +115,7 @@ class ai_chat extends external_api {
                     'section_name' => new external_value(PARAM_TEXT, 'Section name'),
                     'cond_type'    => new external_value(PARAM_ALPHANUMEXT, 'Condition type'),
                     'cond_summary' => new external_value(PARAM_TEXT, 'Condition description'),
+                    'new_summary'  => new external_value(PARAM_TEXT, 'Proposed new value (empty for deletions)'),
                     'action'       => new external_value(PARAM_ALPHA, 'Action: delete or update'),
                 ]),
                 'Preview rows'
