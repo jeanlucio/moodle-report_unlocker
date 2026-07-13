@@ -4,6 +4,14 @@ All notable changes to this plugin are documented here.
 
 ---
 
+## [v1.0.5] — 2026-07-13
+
+### Fixed
+- The AI restriction assistant now respects a course's "Enable AI tools" setting when
+  falling back to Moodle's core AI subsystem. Previously, turning AI tools off for a
+  course had no effect on this plugin if a core AI provider was configured at the site
+  level.
+
 ## [v1.0.4] — 2026-06-29
 
 ### Changed
