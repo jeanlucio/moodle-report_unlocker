@@ -77,7 +77,8 @@ class assistant {
         $prompt = $this->build_prompt($message, $context);
         $coursename = get_course($this->courseid)->shortname;
         $description = get_string('ai_usage', 'report_unlocker', $coursename);
-        $result = service::send($prompt, $description);
+        $coursecontext = \context_course::instance($this->courseid);
+        $result = service::send($prompt, $description, $coursecontext);
 
         if (!$result['success']) {
             return [

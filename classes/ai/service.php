@@ -41,13 +41,18 @@ class service {
     /**
      * Returns true when at least one AI provider is available.
      *
+     * local_aihub is a site-wide BYOK service with no per-course scoping of its own, so
+     * only the core_ai path needs the caller's context to honour a course/module-level
+     * "Enable AI tools" override.
+     *
+     * @param \context $context Context the AI feature is being offered in.
      * @return bool
      */
-    public static function has_ai(): bool {
+    public static function has_ai(\context $context): bool {
         if (class_exists(\local_aihub\ai::class) && \local_aihub\ai::is_available()) {
             return true;
         }
-        return self::has_core_ai();
+        return self::has_core_ai($context);
     }
 
     /**
@@ -59,9 +64,10 @@ class service {
      *
      * @param string $prompt The full prompt text.
      * @param string $description Short label of what is being generated, for the hub usage log.
+     * @param \context $context Context the request is being made in.
      * @return array Result with keys: success (bool), data (string), message (string), provider (string).
      */
-    public static function send(string $prompt, string $description = ''): array {
+    public static function send(string $prompt, string $description, \context $context): array {
         $lasterror = ['success' => false, 'message' => '', 'data' => '', 'provider' => ''];
 
         if (class_exists(\local_aihub\ai::class)) {
@@ -75,8 +81,8 @@ class service {
             }
         }
 
-        if (self::has_core_ai()) {
-            $result = self::call_core_ai($prompt);
+        if (self::has_core_ai($context)) {
+            $result = self::call_core_ai($prompt, $context);
             if ($result['success'] || !empty($result['message'])) {
                 return $result;
             }
@@ -86,15 +92,17 @@ class service {
     }
 
     /**
-     * Returns true when the Moodle core_ai subsystem has at least one provider
-     * configured and enabled for text generation.
+     * Returns true when the Moodle core_ai subsystem has at least one provider configured
+     * and enabled for text generation, and, on Moodle versions that support it, AI tools
+     * are not disabled for this context.
      *
      * Compatible with Moodle 4.5+ — the manager is retrieved via the dependency
      * container, which injects the dependencies for the running version.
      *
+     * @param \context $context Context the AI feature is being offered/used in.
      * @return bool
      */
-    private static function has_core_ai(): bool {
+    private static function has_core_ai(\context $context): bool {
         if (
             !class_exists(\core_ai\manager::class)
             || !class_exists(\core_ai\aiactions\generate_text::class)
@@ -106,26 +114,62 @@ class service {
             $actionclass = \core_ai\aiactions\generate_text::class;
             $manager = \core\di::get(\core_ai\manager::class);
             $providers = $manager->get_providers_for_actions([$actionclass], true);
-            return !empty($providers[$actionclass]);
+            if (empty($providers[$actionclass])) {
+                return false;
+            }
+            return self::action_enabled_in_context($manager, $context, $actionclass);
         } catch (\Throwable $e) {
             return false;
         }
     }
 
     /**
+     * Checks the per-course/per-module "Enable AI tools" override, when the running Moodle
+     * version supports it.
+     *
+     * core_ai\manager::is_action_enabled_in_context() was added to Moodle core after 4.5
+     * (course.enableaitools / course_modules.enableaitools do not exist on 4.5, so the method
+     * itself is undefined there). This plugin supports 4.5+5.x, so the check is skipped —
+     * never blocking — on versions where the method does not exist, exactly like every other
+     * class_exists()/method_exists() guarded integration in this codebase.
+     *
+     * @param \core_ai\manager $manager The AI manager instance.
+     * @param \context $context Context the request is being made in.
+     * @param string $actionclass Fully qualified AI action class name.
+     * @return bool
+     */
+    private static function action_enabled_in_context(
+        \core_ai\manager $manager,
+        \context $context,
+        string $actionclass
+    ): bool {
+        if (!method_exists($manager, 'is_action_enabled_in_context')) {
+            return true;
+        }
+        return $manager->is_action_enabled_in_context($context, $actionclass);
+    }
+
+    /**
      * Calls the Moodle core_ai subsystem with the given prompt.
      *
      * @param string $prompt The prompt text.
+     * @param \context $context Context the request is being made in.
      * @return array Result with keys: success, data, message, provider.
      */
-    private static function call_core_ai(string $prompt): array {
+    private static function call_core_ai(string $prompt, \context $context): array {
         global $USER;
 
         try {
+            $actionclass = \core_ai\aiactions\generate_text::class;
             $manager = \core\di::get(\core_ai\manager::class);
+            $providers = $manager->get_providers_for_actions([$actionclass], true);
+
+            if (empty($providers[$actionclass]) || !self::action_enabled_in_context($manager, $context, $actionclass)) {
+                return ['success' => false, 'message' => '', 'data' => '', 'provider' => ''];
+            }
 
             $action = new \core_ai\aiactions\generate_text(
-                contextid: \context_system::instance()->id,
+                contextid: $context->id,
                 userid: (int) $USER->id,
                 prompttext: $prompt,
             );

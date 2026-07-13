@@ -44,7 +44,7 @@ $PAGE->set_heading($course->fullname);
 $PAGE->set_pagelayout('report');
 $PAGE->requires->js_call_amd('report_unlocker/filters', 'init');
 
-$aiavailable = has_capability('report/unlocker:editconditions', $context) && ai_service::has_ai();
+$aiavailable = has_capability('report/unlocker:editconditions', $context) && ai_service::has_ai($context);
 if ($aiavailable) {
     $PAGE->requires->js_call_amd('report_unlocker/ai_chat', 'init', [$id]);
 }
