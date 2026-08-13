@@ -1,5 +1,6 @@
 # Local planning document (not part of the plugin)
 SCOPE.md
+.plans
 
 # AI reviewer context — local dev tool, not part of the plugin package
 .ai-review-context.md
