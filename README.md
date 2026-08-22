@@ -240,6 +240,8 @@ For bug reports, feature requests, or contributions:
 
 👉 GitHub Issues: https://github.com/jeanlucio/moodle-report_unlocker/issues
 
+For general questions or ideas, use [GitHub Discussions](https://github.com/jeanlucio/moodle-report_unlocker/discussions).
+
 ---
 
 ### 📝 Changelog
@@ -472,6 +474,8 @@ Unlocker é compatível com:
 Para relatos de bugs, solicitações de funcionalidades ou contribuições:
 
 👉 GitHub Issues: https://github.com/jeanlucio/moodle-report_unlocker/issues
+
+Para perguntas gerais ou ideias, use as [Discussions do GitHub](https://github.com/jeanlucio/moodle-report_unlocker/discussions).
 
 ---
 
