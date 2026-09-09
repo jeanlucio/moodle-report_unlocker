@@ -1,0 +1,15 @@
+# Each entry needs an image at docs/assets/img/screenshots/<file>, plus an
+# English and a Portuguese caption. The screenshots.md pages (en/pt) loop over
+# this list, so adding a new screenshot never touches the gallery markup.
+- file: dashboard-overview.png
+  caption_en: "The unified dashboard: every activity restriction in the course — date, group, grade — listed together with the filter panel, AI Assistant, and Remove all visible controls"
+  caption_pt: "O painel unificado: todas as restrições de atividades do curso — data, grupo, nota — listadas juntas, com o painel de filtros, o Assistente IA e o controle Excluir todas as visíveis"
+- file: filter-by-type.png
+  caption_en: "Filtering by restriction type narrows the list to a single condition kind — here, only the grade-based restriction remains"
+  caption_pt: "Filtrar por tipo de restrição reduz a lista a um único tipo de condição — aqui, apenas a restrição baseada em nota permanece"
+- file: nested-group.png
+  caption_en: "Completion, profile, and nested AND/OR restriction groups, each inline-editable or removable directly from the report"
+  caption_pt: "Restrições de conclusão, perfil e grupos aninhados AND/OR, cada uma editável inline ou removível diretamente do relatório"
+- file: remove-all-modal.png
+  caption_en: "The bulk-removal confirmation dialog shows exactly how many restrictions match the active filter before anything is deleted"
+  caption_pt: "O diálogo de confirmação de remoção em massa mostra exatamente quantas restrições correspondem ao filtro ativo antes de qualquer exclusão"
