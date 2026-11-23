@@ -23,7 +23,6 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
-// phpcs:disable moodle.Files.LineLength
 
 $string['activitynotfound'] = 'Activity not found (#{$a})';
 $string['ai_action_delete'] = 'Remove';
